@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messages>
+    <message>
+        <body>
+            <text>hahfhahfdhafd</text>
+        </body>
+        <channel>CHANNEL_BROADCAST</channel>
+        <fromUserId>0</fromUserId>
+        <messageId>0</messageId>
+        <timestamp>1461221369697</timestamp>
+    </message>
+    <message>
+        <body>
+            <text>hreherher</text>
+        </body>
+        <channel>CHANNEL_BROADCAST</channel>
+        <fromUserId>0</fromUserId>
+        <messageId>1</messageId>
+        <timestamp>1461221370641</timestamp>
+    </message>
+    <message>
+        <body>
+            <text>fbzdzbbbz</text>
+        </body>
+        <channel>CHANNEL_BROADCAST</channel>
+        <fromUserId>0</fromUserId>
+        <messageId>2</messageId>
+        <timestamp>1461221371525</timestamp>
+    </message>
+    <message>
+        <body>
+            <text>dfhdfdfdhf</text>
+        </body>
+        <channel>CHANNEL_BROADCAST</channel>
+        <fromUserId>0</fromUserId>
+        <messageId>3</messageId>
+        <timestamp>1461221372565</timestamp>
+    </message>
+</messages>
