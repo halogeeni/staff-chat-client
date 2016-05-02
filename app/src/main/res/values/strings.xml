@@ -3,4 +3,6 @@
     <string name="url_input_hint">Server URL</string>
     <string name="user_id_hint">User ID #</string>
     <string name="login_button">Login</string>
+    <string name="connection_error">Connection error</string>
+    <string name="xml_error">XML error</string>
 </resources>

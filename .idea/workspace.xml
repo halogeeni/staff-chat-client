@@ -18,6 +18,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/fileSnapshots.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/outputFileStates.bin" afterPath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/outputFileStates.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.8/taskArtifacts/taskArtifacts.bin" />
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_23_2_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_23_2_1.xml" />
@@ -28,6 +29,10 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_2_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_2_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_2_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_2_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_23_2_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_23_2_1.xml" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="StaffChatClient.iws" />
@@ -59,6 +64,7 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="0.1609658">
               <caret line="49" column="36" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
               <folding>
@@ -67,27 +73,71 @@
                 <element signature="e#1667#2010#0" expanded="true" />
                 <element signature="e#2009#2010#0" expanded="true" />
                 <element signature="e#2035#2036#0" expanded="true" />
+=======
+            <state vertical-scroll-proportion="0.8961039">
+              <caret line="190" column="22" selection-start-line="190" selection-start-column="22" selection-end-line="190" selection-end-column="22" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3172#3626#0" expanded="true" />
+                <element signature="e#3273#3600#0" expanded="true" />
+                <element signature="e#3599#3600#0" expanded="true" />
+                <element signature="e#3625#3626#0" expanded="true" />
+                <element signature="e#4496#4547#0" expanded="true" />
+                <element signature="e#4621#4665#0" expanded="true" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="38" column="33" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
               <folding />
+=======
+      <file leaf-file-name="XmlMessageParser.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="106" column="22" selection-start-line="106" selection-start-column="22" selection-end-line="106" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="MessageDatabaseHelper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="155" column="46" selection-start-line="155" selection-start-column="46" selection-end-line="155" selection-end-column="46" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< HEAD
       <file leaf-file-name="MessageAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="71" column="51" selection-start-line="71" selection-start-column="49" selection-end-line="71" selection-end-column="51" />
               <folding />
+=======
+      <file leaf-file-name="MessageContentProvider.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContentProvider.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
             </state>
           </provider>
         </entry>
@@ -98,18 +148,41 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="-9.965517">
               <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+=======
+            <state vertical-scroll-proportion="-2.413793">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="XmlMessageParser.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="78" column="13" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
+=======
+      <file leaf-file-name="Message.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Message.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/LoginActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="34" column="58" selection-start-line="34" selection-start-column="58" selection-end-line="34" selection-end-column="58" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
               <folding />
             </state>
           </provider>
@@ -1703,18 +1776,32 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MyContentProvider.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlParser.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Message.java" />
+=======
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         <option value="$PROJECT_DIR$/app/src/main/res/layout/message_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/User.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Group.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Contact.java" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Message.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContentProvider.java" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContract.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MainActivity.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+=======
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
       </list>
     </option>
   </component>
@@ -1729,10 +1816,17 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1382" />
     <option name="height" value="744" />
+=======
+    <option name="x" value="4" />
+    <option name="y" value="23" />
+    <option name="width" value="1269" />
+    <option name="height" value="741" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -2138,7 +2232,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+=======
+    <frame x="4" y="23" width="1269" height="741" extended-state="0" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2154,6 +2252,12 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879046" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
+=======
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3392" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -2191,6 +2295,7 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContract.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2207,18 +2312,12 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2245,6 +2344,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2252,6 +2352,9 @@
             <element signature="e#2009#2010#0" expanded="true" />
             <element signature="e#2035#2036#0" expanded="true" />
           </folding>
+=======
+          <folding />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         </state>
       </provider>
     </entry>
@@ -2288,14 +2391,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Message.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2319,6 +2414,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2326,6 +2422,9 @@
             <element signature="e#2009#2010#0" expanded="true" />
             <element signature="e#2035#2036#0" expanded="true" />
           </folding>
+=======
+          <folding />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         </state>
       </provider>
     </entry>
@@ -2340,14 +2439,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2378,6 +2469,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2392,6 +2484,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="65" column="20" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
+=======
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
@@ -2422,6 +2516,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2436,6 +2531,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="65" column="20" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
+=======
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
@@ -2466,6 +2563,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2480,6 +2578,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+=======
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
@@ -2510,6 +2610,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1566#2036#0" expanded="true" />
@@ -2517,6 +2618,9 @@
             <element signature="e#2009#2010#0" expanded="true" />
             <element signature="e#2035#2036#0" expanded="true" />
           </folding>
+=======
+          <folding />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         </state>
       </provider>
     </entry>
@@ -2546,14 +2650,9 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+=======
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -2566,6 +2665,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/assets/ExampleMessage.xml">
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="30" selection-start-line="0" selection-start-column="30" selection-end-line="0" selection-end-column="33" />
@@ -2584,6 +2684,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Contact.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17123288">
+          <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/message_list_item.xml">
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="48" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="48" />
+          <folding>
+            <element signature="e#345#363#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContract.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="36" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.413793">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/User.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.51369864">
@@ -2596,24 +2738,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.25692695">
           <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="58" selection-start-line="34" selection-start-column="58" selection-end-line="34" selection-end-column="58" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Contact.java">
+    <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-23/android/content/ContentResolver.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.29974812">
           <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
           <folding>
             <element signature="e#132#133#0" expanded="true" />
             <element signature="e#160#161#0" expanded="true" />
           </folding>
+=======
+        <state vertical-scroll-proportion="0.5286458">
+          <caret line="496" column="0" selection-start-line="496" selection-start-column="0" selection-end-line="496" selection-end-column="0" />
+          <folding />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Group.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.4282116">
+=======
+        <state vertical-scroll-proportion="0.390625">
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
         </state>
@@ -2621,6 +2779,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.0">
           <caret line="54" column="2" selection-start-line="54" selection-start-column="2" selection-end-line="54" selection-end-column="2" />
           <folding>
@@ -2633,26 +2792,52 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.24578314">
           <caret line="10" column="37" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
+=======
+        <state vertical-scroll-proportion="0.515625">
+          <caret line="15" column="14" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageContentProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/XmlMessageParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
           <caret line="78" column="13" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
+=======
+          <caret line="106" column="22" selection-start-line="106" selection-start-column="22" selection-end-line="106" selection-end-column="22" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="51" selection-start-line="71" selection-start-column="49" selection-end-line="71" selection-end-column="51" />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/Message.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2682,6 +2867,30 @@
             <element signature="e#1667#2010#0" expanded="true" />
             <element signature="e#2009#2010#0" expanded="true" />
             <element signature="e#2035#2036#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MessageDatabaseHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="155" column="46" selection-start-line="155" selection-start-column="46" selection-end-line="155" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ateamdevelopers/staffchatclient/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8961039">
+          <caret line="190" column="22" selection-start-line="190" selection-start-column="22" selection-end-line="190" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3172#3626#0" expanded="true" />
+            <element signature="e#3273#3600#0" expanded="true" />
+            <element signature="e#3599#3600#0" expanded="true" />
+            <element signature="e#3625#3626#0" expanded="true" />
+            <element signature="e#4496#4547#0" expanded="true" />
+            <element signature="e#4621#4665#0" expanded="true" />
+>>>>>>> ac6b86dcdd24de3211e3415144a1819994393a59
           </folding>
         </state>
       </provider>

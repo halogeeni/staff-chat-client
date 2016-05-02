@@ -33,6 +33,15 @@ public class Message {
         this.toGroupId = toGroupId;
     }
 
+    // all inclusive constructor
+    public Message(Integer fromUserId, Integer toUserId, String body, Integer toGroupId, long timestamp) {
+        this.fromUserId = fromUserId;
+        this.body = body;
+        this.timestamp = timestamp;
+        this.toUserId = toUserId;
+        this.toGroupId = toGroupId;
+    }
+
     @Override
     public String toString() {
         return "fromUserId: " + fromUserId + " body: " + body + " timestamp: " + timestamp;

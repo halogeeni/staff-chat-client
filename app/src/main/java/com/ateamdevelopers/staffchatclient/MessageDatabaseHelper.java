@@ -12,6 +12,8 @@ import java.util.List;
 
 public class MessageDatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = "MessageDatabaseHelper";
+
     private SQLiteDatabase mDb;
 
     private static final String TEXT_TYPE = " TEXT";
@@ -23,14 +25,15 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
                     MessageContract.MessageEntry.COLUMN_NAME_FROM_USER + " INTEGER NOT NULL" + COMMA_SEP +
                     MessageContract.MessageEntry.COLUMN_NAME_TO_USER + INT_TYPE + COMMA_SEP +
                     MessageContract.MessageEntry.COLUMN_NAME_TO_GROUP + INT_TYPE + COMMA_SEP +
-                    MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP + INT_TYPE;
+                    MessageContract.MessageEntry.COLUMN_NAME_BODY + TEXT_TYPE + COMMA_SEP +
+                    MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " INTEGER NOT NULL" + ")";
 
     private static final String SQL_DELETE_TABLE =
             "DROP TABLE IF EXISTS " + MessageContract.MessageEntry.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "PlayerParser.db";
+    private static final String DATABASE_NAME = "Messages.db";
 
     public MessageDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,33 +47,32 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insertMessage(ContentValues values) {
-        Log.d("PlayerDatabaseHelper", "in insertPlayer()");
+        Log.d(TAG, "in insertMessage()");
         mDb = getWritableDatabase();
-        try {
-            return mDb.insert(MessageContract.MessageEntry.TABLE_NAME, null, values);
-        } finally {
-            mDb.close();
-        }
+        return mDb.insert(MessageContract.MessageEntry.TABLE_NAME, null, values);
     }
-/*
+
     public List getMessageList() {
         List<Message> messages = new ArrayList<>();
-
         mDb = getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
                 MessageContract.MessageEntry._ID,
-                MessageContract.MessageEntry.COLUMN_NAME_FULLNAME,
-                PlayerContract.PlayerEntry.COLUMN_NAME_NUMBER
+                MessageContract.MessageEntry.COLUMN_NAME_FROM_USER,
+                MessageContract.MessageEntry.COLUMN_NAME_TO_USER,
+                MessageContract.MessageEntry.COLUMN_NAME_TO_GROUP,
+                MessageContract.MessageEntry.COLUMN_NAME_BODY,
+                MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = PlayerContract.PlayerEntry._ID + " ASC";
+        // TODO should be based on timestamp?
+        String sortOrder = MessageContract.MessageEntry._ID + " ASC";
 
         Cursor c = mDb.query(
-                MessageContract.MessageEntry.TABLE_NAME,      // The table to query
+                MessageContract.MessageEntry.TABLE_NAME,    // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause
@@ -79,43 +81,53 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
                 sortOrder                                   // The sort order
         );
 
-
         try {
             c.moveToFirst();
 
-            int nameColumn = c.getColumnIndex(PlayerContract.PlayerEntry.COLUMN_NAME_FULLNAME);
-            int numberColumn = c.getColumnIndex(PlayerContract.PlayerEntry.COLUMN_NAME_NUMBER);
+            int fromUserIdColumn = c.getColumnIndex(MessageContract.MessageEntry.COLUMN_NAME_FROM_USER);
+            int toUserIdColumn = c.getColumnIndex(MessageContract.MessageEntry.COLUMN_NAME_TO_USER);
+            int toGroupIdColumn = c.getColumnIndex(MessageContract.MessageEntry.COLUMN_NAME_TO_GROUP);
+            int timestampColumn = c.getColumnIndex(MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP);
+            int bodyColumn = c.getColumnIndex(MessageContract.MessageEntry.COLUMN_NAME_BODY);
 
-            while(c.getString(nameColumn) != null) {
-                String name = c.getString(nameColumn);
-                int number = Integer.parseInt(c.getString(numberColumn));
-                Player p = new Player(name, number);
-                players.add(p);
+            while(c.getString(fromUserIdColumn) != null) {
+                String body = c.getString(bodyColumn);
+                int fromUserId = Integer.parseInt(c.getString(fromUserIdColumn));
+                int toUserId = Integer.getInteger(c.getString(toUserIdColumn));
+                int toGroupId = Integer.getInteger(c.getString(toGroupIdColumn));
+                long timestamp = Long.parseLong(c.getString(timestampColumn));
+
+                Message m = new Message(fromUserId, toUserId, body, toGroupId, timestamp);
+                messages.add(m);
+
                 c.moveToNext();
             }
         } finally {
             c.close();
-            mDb.close();
-            return players;
         }
+        return messages;
     }
 
-    public Cursor getPlayerCursor() {
+    public Cursor getMessageCursor() {
         mDb = getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
-                PlayerContract.PlayerEntry._ID,
-                PlayerContract.PlayerEntry.COLUMN_NAME_FULLNAME,
-                PlayerContract.PlayerEntry.COLUMN_NAME_NUMBER
+                MessageContract.MessageEntry._ID,
+                MessageContract.MessageEntry.COLUMN_NAME_FROM_USER,
+                MessageContract.MessageEntry.COLUMN_NAME_TO_USER,
+                MessageContract.MessageEntry.COLUMN_NAME_TO_GROUP,
+                MessageContract.MessageEntry.COLUMN_NAME_BODY,
+                MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = PlayerContract.PlayerEntry._ID + " ASC";
+        // TODO should be based on timestamp?
+        String sortOrder = MessageContract.MessageEntry._ID + " ASC";
 
         return mDb.query(
-                PlayerContract.PlayerEntry.TABLE_NAME,      // The table to query
+                MessageContract.MessageEntry.TABLE_NAME,    // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause
@@ -125,11 +137,9 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-*/
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("PlayerDatabaseHelper", "in onCreate()");
+        Log.d(TAG, "in onCreate()");
         db.execSQL(SQL_CREATE_TABLE);
     }
 
