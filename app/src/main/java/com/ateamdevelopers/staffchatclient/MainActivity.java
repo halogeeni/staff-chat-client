@@ -12,15 +12,20 @@ import android.os.Handler;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,12 +61,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MessageDatabaseHelper mDbHelper;
     private SimpleCursorAdapter mAdapter;
     private List<Message> mLastMessages;
+    private Button sendMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button sendMessage=(Button)findViewById(R.id.sendButton);
+        sendButtonInit();
         // flush the database on login
         mDbHelper = new MessageDatabaseHelper(this);
         mDbHelper.initDb();
@@ -81,6 +89,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         startPollingTask();
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
     }
+
+
+    public void sendButtonInit(){
+
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                try {
+                    new UploadXmlTask().execute(url);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                }
+
+            }
+        });
+    }
+
+
 
     // 2 sec polling timer
     protected void startPollingTask() {
@@ -190,6 +217,59 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         return result;
     }
+
+
+    private class UploadXmlTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... urls) {
+            try {
+                uploadXml(urls[0]);
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private void uploadXml(String urlString) throws XmlPullParserException, IOException{
+
+        Log.d(TAG,"Inside uploadXml");
+
+        EditText messageField=(EditText)findViewById(R.id.writeMessage);
+        String messageBody=messageField.getText().toString();
+        OutputStream output=null;
+        String fromUserId="0";
+        long timestamp=111222333;
+        int messageId=0;
+        String channel="CHANNEL_BROADCAST";
+
+
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        try {
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            String body = "<message> <body><text>"+messageBody+"</text></body>" +
+                    "<channel>"+channel+" </channel> <fromUserId>"+fromUserId+
+            "</fromUserId><messageId>"+messageId+"</messageId><timestamp>"+timestamp+"</timestamp> </message>";
+
+            output = new BufferedOutputStream(conn.getOutputStream());
+            output.write(body.getBytes());
+            output.flush();
+
+        } finally {
+                if (output != null) {
+                    output.close();
+                }
+            }
+    }
+
+
 
     @Override
     protected void onDestroy() {
