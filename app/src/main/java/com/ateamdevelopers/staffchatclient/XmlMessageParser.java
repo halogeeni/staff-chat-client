@@ -72,10 +72,16 @@ public class XmlMessageParser {
 
             String tag = parser.getName();
 
+
+            /*if(tag.equals("body")){
+                Log.d(TAG, "body tag found");
+                body = parser.nextText();
+            }*/
+
             if (tag.equals("text")) {
                 Log.d(TAG, "text tag found");
                 //body = readTagValue(parser, "text");
-            } else if (tag.equals("fromUserId")) {
+            }else if (tag.equals("fromUserId")) {
                 Log.d(TAG, "fromUserId tag found");
                 fromUserId = Integer.parseInt(readTagValue(parser, "fromUserId"));
             } else if (tag.equals("timestamp")) {
@@ -97,6 +103,8 @@ public class XmlMessageParser {
         parser.require(XmlPullParser.END_TAG, ns, tag);
         return value;
     }
+
+
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
