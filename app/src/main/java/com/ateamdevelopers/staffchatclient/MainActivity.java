@@ -19,7 +19,6 @@ import android.widget.SimpleCursorAdapter;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -111,13 +110,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        //mAdapter.notifyDataSetChanged();
         mAdapter.swapCursor(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+        mAdapter.notifyDataSetChanged();
     }
 
     private class DownloadXmlTask extends AsyncTask<String, Void, String> {
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(MessageContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-            } else if(!messageList.containsAll(mLastMessages)) {
+            } else if(messageList.size() > mLastMessages.size()) {
                 Log.d(TAG, "fetched message list contained new entries");
 
                 List<Message> tempMessageList = new ArrayList<>(messageList);

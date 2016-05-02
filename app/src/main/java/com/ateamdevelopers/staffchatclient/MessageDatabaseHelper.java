@@ -49,16 +49,11 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
     public long insertMessage(ContentValues values) {
         Log.d(TAG, "in insertMessage()");
         mDb = getWritableDatabase();
-        try {
-            return mDb.insert(MessageContract.MessageEntry.TABLE_NAME, null, values);
-        } finally {
-            mDb.close();
-        }
+        return mDb.insert(MessageContract.MessageEntry.TABLE_NAME, null, values);
     }
 
     public List getMessageList() {
         List<Message> messages = new ArrayList<>();
-
         mDb = getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
@@ -77,7 +72,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         String sortOrder = MessageContract.MessageEntry._ID + " ASC";
 
         Cursor c = mDb.query(
-                MessageContract.MessageEntry.TABLE_NAME,      // The table to query
+                MessageContract.MessageEntry.TABLE_NAME,    // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause
@@ -109,9 +104,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
             }
         } finally {
             c.close();
-            mDb.close();
         }
-
         return messages;
     }
 
@@ -134,7 +127,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         String sortOrder = MessageContract.MessageEntry._ID + " ASC";
 
         return mDb.query(
-                MessageContract.MessageEntry.TABLE_NAME,      // The table to query
+                MessageContract.MessageEntry.TABLE_NAME,    // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause
