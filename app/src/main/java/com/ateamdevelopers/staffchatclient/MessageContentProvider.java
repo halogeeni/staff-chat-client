@@ -14,7 +14,7 @@ public class MessageContentProvider extends ContentProvider {
     // Constant to identify the requested operation
     private static final int MESSAGES = 1;
 
-    private static final UriMatcher uriMatcher ;
+    private static final UriMatcher uriMatcher;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "messages", MESSAGES);

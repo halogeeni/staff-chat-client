@@ -30,7 +30,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "Users.db";
+    private static final String DATABASE_NAME = "StaffChat.db";
 
     public UserDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

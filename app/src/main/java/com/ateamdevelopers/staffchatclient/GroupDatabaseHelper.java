@@ -30,7 +30,7 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "Groups.db";
+    private static final String DATABASE_NAME = "StaffChat.db";
 
     public GroupDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

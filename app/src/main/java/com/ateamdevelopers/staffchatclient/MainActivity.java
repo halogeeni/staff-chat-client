@@ -76,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
     //private Uri mEndpointURI;
-    private MessageDatabaseHelper mDbHelper;
+    private MessageDatabaseHelper mMessageDbHelper;
+    private GroupDatabaseHelper mGroupDbHelper;
+    private UserDatabaseHelper mUserDbHelper;
     private SimpleCursorAdapter mMessageAdapter, mUserAdapter, mGroupAdapter;
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
@@ -91,10 +93,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         sendMessage = (Button) findViewById(R.id.sendButton);
         sendButtonInit();
 
-        // flush the database on login
-        mDbHelper = new MessageDatabaseHelper(this);
-        mDbHelper.initDb();
-        mDbHelper.close();
+        // flush the databases on login
+        mMessageDbHelper = new MessageDatabaseHelper(this);
+        mMessageDbHelper.initDb();
+
+        mGroupDbHelper = new GroupDatabaseHelper(this);
+        mGroupDbHelper.initDb();
+
+        mUserDbHelper = new UserDatabaseHelper(this);
+        mUserDbHelper.initDb();
 
         mLastMessages = new ArrayList<>();
         mLastGroups = new ArrayList<>();
@@ -105,18 +112,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new String[]{DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
                         DataContract.MessageEntry.COLUMN_NAME_BODY,
                         DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP},
-                new int[]{R.id.messageUsername, R.id.messageBody, R.id.messageTimestamp}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                new int[]{R.id.messageUsername, R.id.messageBody, R.id.messageTimestamp}, CursorAdapter.NO_SELECTION);
 
         mUserAdapter = new SimpleCursorAdapter(this,
                 R.layout.user_list_item, null,
                 new String[]{DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
                         DataContract.UserEntry.COLUMN_NAME_LASTNAME},
-                new int[]{R.id.userFirstname, R.id.userFirstname}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                new int[]{R.id.userFirstname, R.id.userLastname}, CursorAdapter.NO_SELECTION);
 
         mGroupAdapter = new SimpleCursorAdapter(this,
                 R.layout.group_list_item, null,
                 new String[]{DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME},
-                new int[]{R.id.groupName}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                new int[]{R.id.groupName}, CursorAdapter.NO_SELECTION);
 
         ListView messageListView = (ListView) findViewById(R.id.messageList);
         ListView userListView = (ListView) findViewById(R.id.drawer_users);
@@ -182,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            new DownloadMessageXmlTask().execute(userUrl);
+                            new DownloadUserXmlTask().execute(userUrl);
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                         }
@@ -203,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            new DownloadMessageXmlTask().execute(groupUrl);
+                            new DownloadGroupXmlTask().execute(groupUrl);
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                         }
@@ -422,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     private String downloadGroupXml(String urlString) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in downloadMessageXml()");
+        Log.d(TAG, "in downloadGroupXml()");
 
         InputStream stream = null;
         XmlGroupParser groupParser = new XmlGroupParser();
@@ -446,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 for (Group g : groupList) {
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_ID, g.getId());
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
-                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+                    getContentResolver().insert(GroupContentProvider.CONTENT_URI, values);
                 }
             } else if (groupList.size() > mLastGroups.size()) {
                 Log.d(TAG, "fetched group list contained new entries");
@@ -529,7 +536,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDbHelper.close();
+        mMessageDbHelper.close();
+        mGroupDbHelper.close();
+        mUserDbHelper.close();
     }
 
 }

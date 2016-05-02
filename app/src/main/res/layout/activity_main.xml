@@ -17,46 +17,61 @@ android:layout_height="match_parent">
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" />
 
-
-    <EditText
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="write message here"
-        android:id="@+id/writeMessage"
-        android:layout_gravity="right|top" />
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sendButton"
-        android:text="Send"
-        android:layout_gravity="right|center_vertical" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="write message here"
+            android:id="@+id/writeMessage"
+            android:layout_alignParentBottom="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sendButton"
+            android:text="Send"
+            android:layout_alignRight="@id/writeMessage" />
+
+    </LinearLayout>
 
 
 </FrameLayout>
 <!-- The navigation drawer -->
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/drawer_Linearlayout"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:background="#ffffff" >
 
-        <ListView android:id="@+id/drawer_groups"
-            android:layout_width="240dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:background="#111" />
-        <ListView android:id="@+id/drawer_users"
-            android:layout_width="240dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:background="#111"/>
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="@string/drawer_groups_title"/>
+
+        <ListView
+            android:id="@+id/drawer_groups"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="@string/drawer_users_title"/>
+
+        <ListView
+            android:id="@+id/drawer_users"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+
     </LinearLayout>
-
 
 </android.support.v4.widget.DrawerLayout>

@@ -72,7 +72,7 @@ public class XmlUserParser {
             if (tag.equals("userId")) {
                 Log.d(TAG, "userId tag found");
                 userId = Integer.parseInt(readTagValue(parser, "userId"));
-            } else if (tag.equals("first")) {
+            } else if (tag.equals("firstname")) {
                 Log.d(TAG, "firstname tag found");
                 firstname = readTagValue(parser, "firstname");
             } else if (tag.equals("lastname")) {
