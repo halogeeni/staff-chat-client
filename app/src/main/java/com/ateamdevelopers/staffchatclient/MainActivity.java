@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     };
 
     // REST URL - should be eventually the root, e.g. http://10.0.2.2:8080/StaffChat/webresources/
+    private final String postMessageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/add";
     private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/broadcast";
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
@@ -87,8 +88,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button sendMessage=(Button)findViewById(R.id.sendButton);
+        sendMessage = (Button) findViewById(R.id.sendButton);
         sendButtonInit();
+
         // flush the database on login
         mDbHelper = new MessageDatabaseHelper(this);
         mDbHelper.initDb();
@@ -100,21 +102,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mMessageAdapter = new SimpleCursorAdapter(this,
                 R.layout.message_list_item, null,
-                new String[] { DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
+                new String[]{DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
                         DataContract.MessageEntry.COLUMN_NAME_BODY,
-                        DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP },
-                new int[] { R.id.messageUsername , R.id.messageBody, R.id.messageTimestamp }, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                        DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP},
+                new int[]{R.id.messageUsername, R.id.messageBody, R.id.messageTimestamp}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         mUserAdapter = new SimpleCursorAdapter(this,
                 R.layout.user_list_item, null,
-                new String[] { DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
-                        DataContract.UserEntry.COLUMN_NAME_LASTNAME },
-                new int[] { R.id.userFirstname, R.id.userFirstname }, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                new String[]{DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
+                        DataContract.UserEntry.COLUMN_NAME_LASTNAME},
+                new int[]{R.id.userFirstname, R.id.userFirstname}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         mGroupAdapter = new SimpleCursorAdapter(this,
                 R.layout.group_list_item, null,
-                new String[] { DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME },
-                new int[] { R.id.groupName }, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                new String[]{DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME},
+                new int[]{R.id.groupName}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         ListView messageListView = (ListView) findViewById(R.id.messageList);
         ListView userListView = (ListView) findViewById(R.id.drawer_users);
@@ -133,14 +135,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
     }
 
-    public void sendButtonInit(){
+    public void sendButtonInit() {
 
         sendMessage.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 try {
-                    new UploadXmlTask().execute(url);
+                    new UploadXmlTask().execute(postMessageUrl);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                 }
@@ -229,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()) {
+        switch (loader.getId()) {
             case MESSAGE_LOADER_ID:
                 mMessageAdapter.swapCursor(data);
                 mMessageAdapter.notifyDataSetChanged();
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        switch(loader.getId()) {
+        switch (loader.getId()) {
             case MESSAGE_LOADER_ID:
                 mMessageAdapter.swapCursor(null);
                 mMessageAdapter.notifyDataSetChanged();
@@ -320,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // not the most elegant solution, but works for now
             List<Message> messageList = messageParser.parse(stream);
             Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
-            if(mLastMessages.isEmpty()) {
+            if (mLastMessages.isEmpty()) {
                 mLastMessages.addAll(messageList);
                 // Create a new map of values, where column names are the keys
                 ContentValues values = new ContentValues();
@@ -332,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-            } else if(messageList.size() > mLastMessages.size()) {
+            } else if (messageList.size() > mLastMessages.size()) {
                 Log.d(TAG, "fetched message list contained new entries");
 
                 List<Message> tempMessageList = new ArrayList<>(messageList);
@@ -380,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // not the most elegant solution, but works for now
             List<User> userList = userParser.parse(stream);
             Log.d(TAG, "in downloadUserXml - mLastUsers now: " + mLastUsers);
-            if(mLastUsers.isEmpty()) {
+            if (mLastUsers.isEmpty()) {
                 mLastUsers.addAll(userList);
                 // Create a new map of values, where column names are the keys
                 ContentValues values = new ContentValues();
@@ -390,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME, u.getLastname());
                     getContentResolver().insert(UserContentProvider.CONTENT_URI, values);
                 }
-            } else if(userList.size() > mLastUsers.size()) {
+            } else if (userList.size() > mLastUsers.size()) {
                 Log.d(TAG, "fetched user list contained new entries");
 
                 List<User> tempUserList = new ArrayList<>(userList);
@@ -437,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // not the most elegant solution, but works for now
             List<Group> groupList = groupParser.parse(stream);
             Log.d(TAG, "in downloadGroupXml - mLastGroups now: " + mLastGroups);
-            if(mLastGroups.isEmpty()) {
+            if (mLastGroups.isEmpty()) {
                 mLastGroups.addAll(groupList);
                 // Create a new map of values, where column names are the keys
                 ContentValues values = new ContentValues();
@@ -446,12 +448,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-            } else if(groupList.size() > mLastGroups.size()) {
+            } else if (groupList.size() > mLastGroups.size()) {
                 Log.d(TAG, "fetched group list contained new entries");
 
                 List<Group> tempGroupList = new ArrayList<>(groupList);
 
-                groupList.removeAll(mLastMessages);
+                groupList.removeAll(mLastGroups);
                 ContentValues values = new ContentValues();
 
                 for (Group g : groupList) {
@@ -488,17 +490,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    private void uploadXml(String urlString) throws XmlPullParserException, IOException{
+    private void uploadXml(String urlString) throws XmlPullParserException, IOException {
 
-        Log.d(TAG,"Inside uploadXml");
+        Log.d(TAG, "Inside uploadXml");
 
-        EditText messageField=(EditText)findViewById(R.id.writeMessage);
-        String messageBody=messageField.getText().toString();
-        OutputStream output=null;
-        String fromUserId="0";
-        long timestamp=111222333;
-        int messageId=0;
-        String channel="CHANNEL_BROADCAST";
+        EditText messageField = (EditText) findViewById(R.id.writeMessage);
+        String messageBody = messageField.getText().toString();
+        OutputStream output = null;
+        String fromUserId = "0";
+        long timestamp = 111222333;
+        int messageId = 0;
+        String channel = "CHANNEL_BROADCAST";
 
 
         URL url = new URL(urlString);
@@ -509,19 +511,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.setDoOutput(true);
 
 
-            String body = "<message> <body><text>"+messageBody+"</text></body>" +
-                    "<channel>"+channel+" </channel> <fromUserId>"+fromUserId+
-            "</fromUserId><messageId>"+messageId+"</messageId><timestamp>"+timestamp+"</timestamp> </message>";
+            String body = "<message> <body><text>" + messageBody + "</text></body>" +
+                    "<channel>" + channel + " </channel> <fromUserId>" + fromUserId +
+                    "</fromUserId><messageId>" + messageId + "</messageId><timestamp>" + timestamp + "</timestamp> </message>";
 
             output = new BufferedOutputStream(conn.getOutputStream());
             output.write(body.getBytes());
             output.flush();
 
         } finally {
-                if (output != null) {
-                    output.close();
-                }
+            if (output != null) {
+                output.close();
             }
+        }
     }
 
     @Override

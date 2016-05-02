@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
 public class MessageContentProvider extends ContentProvider {
     public static final String PROVIDER_NAME = "com.ateamdevelopers.staffchatclient.MessageContentProvider";
@@ -31,13 +30,11 @@ public class MessageContentProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
     @Override
     public String getType(Uri uri) {
         return null;
     }
 
-    @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if(uriMatcher.match(uri) == MESSAGES){

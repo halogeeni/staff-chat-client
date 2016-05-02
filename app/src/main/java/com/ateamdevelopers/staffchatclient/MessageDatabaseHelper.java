@@ -19,6 +19,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
     private static final String TEXT_TYPE = " TEXT";
     private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
+
     private static final String SQL_CREATE_TABLE =
             "CREATE TABLE " + DataContract.MessageEntry.TABLE_NAME + " (" +
                     DataContract.MessageEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +

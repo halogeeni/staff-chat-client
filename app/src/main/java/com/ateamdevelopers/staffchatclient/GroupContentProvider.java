@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
 public class GroupContentProvider extends ContentProvider {
 
@@ -31,7 +30,6 @@ public class GroupContentProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if(uriMatcher.match(uri) == GROUPS){
@@ -43,13 +41,11 @@ public class GroupContentProvider extends ContentProvider {
         }
     }
 
-    @Nullable
     @Override
     public String getType(Uri uri) {
         return null;
     }
 
-    @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         try {
