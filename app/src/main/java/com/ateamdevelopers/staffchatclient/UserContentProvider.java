@@ -8,27 +8,36 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-public class MessageContentProvider extends ContentProvider {
-    public static final String PROVIDER_NAME = "com.ateamdevelopers.staffchatclient.MessageContentProvider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + PROVIDER_NAME + "/messages");
-
-    // Constant to identify the requested operation
-    private static final int MESSAGES = 1;
+public class UserContentProvider extends ContentProvider {
+    public static final String PROVIDER_NAME = "com.ateamdevelopers.staffchatclient.UserContentProvider";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + PROVIDER_NAME + "/users");
+    private static final int USERS = 1;
 
     private static final UriMatcher uriMatcher ;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, "messages", MESSAGES);
+        uriMatcher.addURI(PROVIDER_NAME, "users", USERS);
     }
 
-    // content provider does the database operations by this object
-    private MessageDatabaseHelper mMessageDb;
+    private UserDatabaseHelper mUserDb;
 
-    // callback method which is invoked when the content provider is starting up
+
     @Override
     public boolean onCreate() {
-        mMessageDb = new MessageDatabaseHelper(getContext());
+        mUserDb = new UserDatabaseHelper(getContext());
         return true;
+    }
+
+    @Nullable
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        if(uriMatcher.match(uri) == USERS){
+            Cursor cursor = mUserDb.getUserCursor();
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+            return cursor;
+        } else{
+            return null;
+        }
     }
 
     @Nullable
@@ -39,26 +48,9 @@ public class MessageContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        if(uriMatcher.match(uri) == MESSAGES){
-            Cursor cursor = mMessageDb.getMessageCursor();
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
-        } else{
-            return null;
-        }
-    }
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // TODO not used in this lab
-        return 0;
-    }
-
-    @Override
     public Uri insert(Uri uri, ContentValues values) {
         try {
-            long id = mMessageDb.insertMessage(values);
+            long id = mUserDb.insertUser(values);
             Uri returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
             getContext().getContentResolver().notifyChange(returnUri, null);
             return returnUri;
@@ -67,10 +59,15 @@ public class MessageContentProvider extends ContentProvider {
         }
     }
 
+    // deletes and updates are not used
+
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // TODO Auto-generated method stub
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        return 0;
+    }
 }

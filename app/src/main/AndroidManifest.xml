@@ -22,6 +22,16 @@
         <activity android:name=".MainActivity" />
 
         <provider
+            android:name=".GroupContentProvider"
+            android:authorities="com.ateamdevelopers.staffchatclient.GroupContentProvider"
+            android:exported="false" />
+
+        <provider
+            android:name=".UserContentProvider"
+            android:authorities="com.ateamdevelopers.staffchatclient.UserContentProvider"
+            android:exported="false" />
+
+        <provider
             android:name=".MessageContentProvider"
             android:authorities="com.ateamdevelopers.staffchatclient.MessageContentProvider"
             android:exported="false" />
