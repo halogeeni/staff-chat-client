@@ -21,6 +21,11 @@
 
         <activity android:name=".MainActivity" />
 
+        <provider
+            android:name=".MessageContentProvider"
+            android:authorities="com.ateamdevelopers.staffchatclient.MessageContentProvider"
+            android:exported="false" />
+
     </application>
 
 </manifest>
