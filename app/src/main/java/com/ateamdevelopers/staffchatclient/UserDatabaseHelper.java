@@ -22,8 +22,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + DataContract.UserEntry.TABLE_NAME + " (" +
                     DataContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
                     DataContract.UserEntry.COLUMN_NAME_USERID + " INTEGER NOT NULL" + COMMA_SEP +
-                    DataContract.UserEntry.COLUMN_NAME_FIRSTNAME + TEXT_TYPE + COMMA_SEP +
-                    DataContract.UserEntry.COLUMN_NAME_LASTNAME + TEXT_TYPE + ")";
+                    DataContract.UserEntry.COLUMN_NAME_USER_NAME + TEXT_TYPE + ")";
 
     private static final String SQL_DELETE_TABLE =
             "DROP TABLE IF EXISTS " + DataContract.UserEntry.TABLE_NAME;
@@ -58,8 +57,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         String[] projection = {
                 DataContract.UserEntry._ID,
                 DataContract.UserEntry.COLUMN_NAME_USERID,
-                DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
-                DataContract.UserEntry.COLUMN_NAME_LASTNAME
+                DataContract.UserEntry.COLUMN_NAME_USER_NAME
         };
 
         // How you want the results sorted in the resulting Cursor
@@ -80,15 +78,13 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
             c.moveToFirst();
 
             int userIdColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USERID);
-            int firstnameColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME);
-            int lastnameColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_LASTNAME);
+            int nameColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME);
 
             while(c.getString(userIdColumn) != null) {
                 int userId = Integer.parseInt(c.getString(userIdColumn));
-                String firstname = c.getString(firstnameColumn);
-                String lastname = c.getString(lastnameColumn);
+                String name = c.getString(nameColumn);
 
-                User u = new User(userId, firstname, lastname);
+                User u = new User(userId, name);
                 users.add(u);
 
                 c.moveToNext();
@@ -107,8 +103,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         String[] projection = {
                 DataContract.UserEntry._ID,
                 DataContract.UserEntry.COLUMN_NAME_USERID,
-                DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
-                DataContract.UserEntry.COLUMN_NAME_LASTNAME
+                DataContract.UserEntry.COLUMN_NAME_USER_NAME
         };
 
         // How you want the results sorted in the resulting Cursor
