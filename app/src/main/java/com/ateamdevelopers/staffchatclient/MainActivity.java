@@ -5,10 +5,12 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
+    private DrawerLayout mDrawer;
 
     private Timer mTimer;
 
@@ -118,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mUserDbHelper = new UserDatabaseHelper(this);
         mUserDbHelper.initDb();
+
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mLastMessages = new ArrayList<>();
         mLastGroups = new ArrayList<>();
@@ -152,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         startUserPollingTask();
         startGroupPollingTask();
 
-        // TODO init or reset loaders on item clicks
+        // TODO maybe re-init or reset loaders on item clicks?
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
         getLoaderManager().initLoader(GROUP_LOADER_ID, null, this);
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
@@ -168,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mMessageDbHelper.initDb();
                 mLastMessages.clear();
                 mTimer = startMessagePollingTask();
+                mDrawer.closeDrawers();
             }
         });
 
@@ -182,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mMessageDbHelper.initDb();
                 mLastMessages.clear();
                 mTimer = startMessagePollingTask();
+                mDrawer.closeDrawers();
             }
         });
     }
@@ -378,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // not the most elegant solution, but works for now
             List<Message> messageList = messageParser.parse(stream);
 
+            /*
             Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
             if (mLastMessages.isEmpty()) {
                 mLastMessages.addAll(messageList);
@@ -421,6 +429,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 mLastMessages.clear();
                 mLastMessages.addAll(tempMessageList);
+            }
+            */
+
+            // clear table
+            getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+
+            // insert new values
+            ContentValues values = new ContentValues();
+
+            for (Message m : messageList) {
+                values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
+                values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
+                values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
+                values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
+                values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+                getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
             }
 
         } finally {

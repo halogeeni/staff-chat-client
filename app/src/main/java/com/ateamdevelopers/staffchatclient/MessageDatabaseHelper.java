@@ -53,6 +53,10 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         return mDb.insert(DataContract.MessageEntry.TABLE_NAME, null, values);
     }
 
+    public int deleteAll() {
+        return mDb.delete(DataContract.MessageEntry.TABLE_NAME, null, null);
+    }
+
     public List getMessageList() {
         List<Message> messages = new ArrayList<>();
         mDb = getReadableDatabase();
