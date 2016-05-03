@@ -83,15 +83,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
-    private Button sendMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        sendMessage = (Button) findViewById(R.id.sendButton);
-        sendButtonInit();
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
@@ -142,20 +138,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
     }
 
-    public void sendButtonInit() {
-
-        sendMessage.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                try {
-                    new UploadXmlTask().execute(postMessageUrl);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                }
-
-            }
-        });
+    public void sendButtonClicked(View v) {
+        try {
+            new UploadXmlTask().execute(postMessageUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+        }
     }
 
     // 2 sec message polling timer
@@ -176,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 2000); //execute every 2 secs
+        timer.schedule(doAsynchronousTask, 0, 1000); //execute every 2 secs
     }
 
     // 60 sec user polling timer
@@ -499,37 +487,66 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void uploadXml(String urlString) throws XmlPullParserException, IOException {
 
-        Log.d(TAG, "Inside uploadXml");
+        Log.d(TAG, "in uploadXml()");
+
+        // disable button on POST
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.sendButton).setEnabled(false);
+            }
+        });
 
         EditText messageField = (EditText) findViewById(R.id.writeMessage);
         String messageBody = messageField.getText().toString();
         OutputStream output = null;
-        String fromUserId = "0";
-        long timestamp = 111222333;
-        int messageId = 0;
         String channel = "CHANNEL_BROADCAST";
-
 
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        Log.d(TAG, "in uploadXml() - fetched messagebody: " + messageBody);
+
         try {
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
+            Log.d(TAG, "in uploadXml() - POST setup");
+
+            String body = "<message><body><text>" + messageBody + "</text></body>" +
+                    "<channel>" + channel + "</channel><fromUserId>" + currentUser +
+                    "</fromUserId><messageId>-1</messageId><timestamp>-1</timestamp></message>";
+
             conn.setDoOutput(true);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setFixedLengthStreamingMode(body.getBytes().length);
+            conn.setRequestProperty("Content-Type", "application/xml; charset=\"utf-8\"");
 
-
-            String body = "<message> <body><text>" + messageBody + "</text></body>" +
-                    "<channel>" + channel + " </channel> <fromUserId>" + fromUserId +
-                    "</fromUserId><messageId>" + messageId + "</messageId><timestamp>" + timestamp + "</timestamp> </message>";
-
+            Log.d(TAG, "in uploadXml() - sending XML data to server:\n"+body);
             output = new BufferedOutputStream(conn.getOutputStream());
             output.write(body.getBytes());
             output.flush();
+            output.close();
 
+            // clear textfield on successful POST
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // clear edittext and re-enable button
+                    ((EditText) findViewById(R.id.writeMessage)).setText("");
+                }
+            });
         } finally {
             if (output != null) {
                 output.close();
             }
+            Log.d(TAG, "in uploadXml() - disconnecting");
+            conn.disconnect();
+            // disable button on POST
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    findViewById(R.id.sendButton).setEnabled(true);
+                }
+            });
         }
     }
 
