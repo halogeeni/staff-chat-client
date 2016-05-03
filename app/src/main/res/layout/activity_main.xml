@@ -15,7 +15,8 @@ android:layout_height="match_parent">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll" />
+        android:transcriptMode="alwaysScroll"
+        android:layout_marginBottom="45dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,13 +29,17 @@ android:layout_height="match_parent">
             android:layout_height="wrap_content"
             android:hint="write message here"
             android:id="@+id/writeMessage"
-            android:layout_alignParentBottom="true" />
+            android:textAlignment="textStart"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:singleLine="true" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:id="@+id/sendButton"
             android:text="Send"
+            android:textAlignment="center"
             android:layout_alignRight="@id/writeMessage"
             android:onClick="sendButtonClicked" />
 
@@ -48,16 +53,21 @@ android:layout_height="match_parent">
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:transcriptMode="alwaysScroll"
         android:orientation="vertical"
-        android:background="#ffffff" >
+        android:background="#ffffff"
+        android:layout_weight="0.90"
+        android:weightSum="1" >
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:background="#D0E2FF"
             android:text="Groups"
-            android:textSize="25dp"
-            android:paddingLeft="5dp" />
+            android:textSize="30dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
         <ListView
             android:id="@+id/drawer_groups"
@@ -67,11 +77,13 @@ android:layout_height="match_parent">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:background="#D0E2FF"
             android:text="@string/drawer_users_title"
-            android:textSize="25dp"
-            android:paddingLeft="5dp" />
+            android:textSize="30dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
         <ListView
             android:id="@+id/drawer_users"
