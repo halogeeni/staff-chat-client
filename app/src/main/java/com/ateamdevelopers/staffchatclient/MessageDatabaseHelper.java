@@ -127,7 +127,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         String sortOrder = DataContract.MessageEntry._ID + " ASC";
 
         return mDb.query(
-                DataContract.MessageEntry.TABLE_NAME,    // The table to query
+                DataContract.MessageEntry.TABLE_NAME,       // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause

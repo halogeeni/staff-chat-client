@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
+
     private Timer mTimer;
 
     @Override
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         startUserPollingTask();
         startGroupPollingTask();
 
+        // TODO init or reset loaders on item clicks
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
         getLoaderManager().initLoader(GROUP_LOADER_ID, null, this);
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
@@ -375,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // not the most elegant solution, but works for now
             List<Message> messageList = messageParser.parse(stream);
+
             Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
             if (mLastMessages.isEmpty()) {
                 mLastMessages.addAll(messageList);
@@ -386,14 +389,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
                     values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
+                Log.d(TAG, "messageList in: " + messageList.toString());
             } else if (messageList.size() > mLastMessages.size()) {
                 Log.d(TAG, "fetched message list contained new entries");
 
                 List<Message> tempMessageList = new ArrayList<>(messageList);
 
-                messageList.removeAll(mLastMessages);
+                // TODO fix this
+                for(int i = 0; i < mLastMessages.size(); i++) {
+                    // TODO message ids?
+                    if(messageList.get(i).getTimestamp() == mLastMessages.get(i).getTimestamp()) {
+                        messageList.remove(i);
+                    }
+                }
+
+                //messageList.removeAll(mLastMessages);
+                Log.d(TAG, "messageList after removeAll(): " + messageList.toString());
                 ContentValues values = new ContentValues();
 
                 for (Message m : messageList) {
