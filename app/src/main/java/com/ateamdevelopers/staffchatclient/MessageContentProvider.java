@@ -48,7 +48,6 @@ public class MessageContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // TODO not used in this lab
         return 0;
     }
 

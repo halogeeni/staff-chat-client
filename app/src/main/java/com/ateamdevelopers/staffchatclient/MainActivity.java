@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
@@ -38,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final int MESSAGE_LOADER_ID = 0x01, GROUP_LOADER_ID = 0x02, USER_LOADER_ID = 0x03;
 
     private final int currentUser = 0;
-    private int groupSelection = 0;
-    private int userSelection = 0;
+    private int groupSelection;
+    private int userSelection;
 
     private Channel channel;
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // REST URL - should be eventually the root, e.g. http://10.0.2.2:8080/StaffChat/webresources/
     private final String postMessageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/add";
-    private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/broadcast";
+    private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages";
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // open broadcast chat by default
         channel = Channel.CHANNEL_BROADCAST;
+
+        // default contact selection values
+        groupSelection = 0;
+        userSelection = 0;
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
@@ -141,13 +147,41 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userListView.setAdapter(mUserAdapter);
         groupListView.setAdapter(mGroupAdapter);
 
-        startMessagePollingTask();
+        mTimer = startMessagePollingTask();
         startUserPollingTask();
         startGroupPollingTask();
 
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
         getLoaderManager().initLoader(GROUP_LOADER_ID, null, this);
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
+
+        // contact lists' itemClickListeners
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "userList item # " + id + " clicked");
+                userSelection = position;
+                channel = Channel.CHANNEL_PRIVATE;
+                mTimer.cancel();
+                mMessageDbHelper.initDb();
+                mLastMessages.clear();
+                mTimer = startMessagePollingTask();
+            }
+        });
+
+        groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "groupList item # " + id + " clicked");
+                groupSelection = position;
+                Log.d(TAG, "groupSelection now: " + groupSelection);
+                channel = Channel.CHANNEL_GROUP;
+                mTimer.cancel();
+                mMessageDbHelper.initDb();
+                mLastMessages.clear();
+                mTimer = startMessagePollingTask();
+            }
+        });
     }
 
     public void sendButtonClicked(View v) {
@@ -159,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     // 2 sec message polling timer
-    protected void startMessagePollingTask() {
+    protected Timer startMessagePollingTask() {
         final Handler handler = new Handler();
         Timer timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
@@ -177,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         };
         timer.schedule(doAsynchronousTask, 0, 1000); //execute every 2 secs
+        return timer;
     }
 
     // 60 sec user polling timer
@@ -317,6 +352,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         InputStream stream = null;
         XmlMessageParser messageParser = new XmlMessageParser();
         String result = "";
+
+        switch (channel) {
+            case CHANNEL_BROADCAST:
+                urlString += "/broadcast";
+                break;
+            case CHANNEL_PRIVATE:
+                urlString += ("/" + currentUser + "/private/" + userSelection);
+                break;
+            case CHANNEL_GROUP:
+                urlString +=("/group/" + groupSelection);
+                break;
+        }
 
         try {
             // connect to the server & get stream
@@ -518,8 +565,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         try {
             Log.d(TAG, "in uploadXml() - POST setup");
-
-
 
             String body = "<message><body><text>" + messageBody + "</text></body>" +
                     "<channel>" + channel.toString() + "</channel><fromUserId>" + currentUser +

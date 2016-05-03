@@ -23,14 +23,14 @@ public class XmlMessageParser {
             parser.setInput(in, null);
             parser.nextTag();
             // so far just broadcast messages...
-            return readBroadcastMessages(parser);
+            return readMessages(parser);
         } finally {
             in.close();
         }
     }
 
-    private List<Message> readBroadcastMessages(XmlPullParser parser) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in readBroadcastMessages");
+    private List<Message> readMessages(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Log.d(TAG, "in readMessages");
         List messages = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, ns, "messages");
@@ -41,14 +41,14 @@ public class XmlMessageParser {
             String name = parser.getName();
             // Starts by looking for the entry tag
             if (name.equals("message")) {
-                messages.add(readMessage(parser));
+                messages.add(readSingleMessage(parser));
                 Log.d(TAG, "read message");
             } else {
                 skip(parser);
             }
         }
 
-        Log.d(TAG, "message 0 now: " + messages.get(0).toString());
+        //Log.d(TAG, "message 0 now: " + messages.get(0).toString());
 
         return messages;
     }
@@ -56,7 +56,7 @@ public class XmlMessageParser {
     // TODO read group messages, read user-to-user messages
 
     // just broadcast messages so far...
-    private Message readMessage(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private Message readSingleMessage(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "message");
 
         long timestamp = 0;
@@ -81,7 +81,7 @@ public class XmlMessageParser {
         }
 
         // two whiles! surely you are a wizard
-        // - XML parsing wizardry
+        // - XML parsing black magic
 
         // XML node parse loop
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -120,16 +120,6 @@ public class XmlMessageParser {
 
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
-        }
-        return result;
-    }
-
-    private String readChildNode(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, tag);
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();

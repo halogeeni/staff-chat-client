@@ -55,8 +55,6 @@ public class UserContentProvider extends ContentProvider {
         }
     }
 
-    // deletes and updates are not used
-
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         return 0;

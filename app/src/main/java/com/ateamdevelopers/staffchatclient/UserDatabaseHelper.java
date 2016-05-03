@@ -61,7 +61,6 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.UserEntry._ID + " ASC";
 
         Cursor c = mDb.query(
@@ -107,7 +106,6 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.UserEntry._ID + " ASC";
 
         return mDb.query(
