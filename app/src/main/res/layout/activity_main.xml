@@ -52,24 +52,30 @@ android:layout_height="match_parent">
         android:background="#ffffff" >
 
         <TextView
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:text="@string/drawer_groups_title"/>
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="#D0E2FF"
+            android:text="Groups"
+            android:textSize="25dp"
+            android:paddingLeft="5dp" />
 
         <ListView
             android:id="@+id/drawer_groups"
-            android:layout_width="180dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice" />
 
         <TextView
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:text="@string/drawer_users_title"/>
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="#D0E2FF"
+            android:text="@string/drawer_users_title"
+            android:textSize="25dp"
+            android:paddingLeft="5dp" />
 
         <ListView
             android:id="@+id/drawer_users"
-            android:layout_width="180dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice" />
 
