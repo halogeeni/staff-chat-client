@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
+    // For Joel's computer only, cos why not
+    /*private final String postMessageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/add";
+    private final String messageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/broadcast";
+    private final String userUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/users";
+    private final String groupUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/groups";*/
+
     //private Uri mEndpointURI;
     private MessageDatabaseHelper mMessageDbHelper;
     private GroupDatabaseHelper mGroupDbHelper;
