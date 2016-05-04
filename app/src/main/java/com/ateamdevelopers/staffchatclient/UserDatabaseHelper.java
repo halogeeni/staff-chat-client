@@ -42,6 +42,10 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         mDb.close();
     }
 
+    public int deleteAll() {
+        return mDb.delete(DataContract.UserEntry.TABLE_NAME, null, null);
+    }
+
     public long insertUser(ContentValues values) {
         Log.d(TAG, "in insertUser()");
         mDb = getWritableDatabase();
@@ -61,7 +65,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.UserEntry._ID + " ASC";
+        String sortOrder = DataContract.UserEntry.COLUMN_NAME_USERID + " ASC";
 
         Cursor c = mDb.query(
                 DataContract.UserEntry.TABLE_NAME,    // The table to query
@@ -106,7 +110,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.UserEntry._ID + " ASC";
+        String sortOrder = DataContract.UserEntry.COLUMN_NAME_USERID + " ASC";
 
         return mDb.query(
                 DataContract.UserEntry.TABLE_NAME,          // The table to query
@@ -118,24 +122,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
                 sortOrder                                   // The sort order
         );
     }
-/*
-    public Cursor getCustomUserCursor(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        mDb = getReadableDatabase();
 
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-
-        return mDb.query(
-                DataContract.UserEntry.TABLE_NAME,          // The table to query
-                projection,                                 // The columns to return
-                selection,                                  // The columns for the WHERE clause
-                selectionArgs,                              // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                sortOrder                                   // The sort order
-        );
-    }
-*/
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "in onCreate()");

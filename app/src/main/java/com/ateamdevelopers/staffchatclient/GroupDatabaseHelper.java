@@ -49,6 +49,10 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         return mDb.insert(DataContract.GroupEntry.TABLE_NAME, null, values);
     }
 
+    public int deleteAll() {
+        return mDb.delete(DataContract.GroupEntry.TABLE_NAME, null, null);
+    }
+
     public List getGroupList() {
         List<Group> groups = new ArrayList<>();
         mDb = getReadableDatabase();
@@ -62,7 +66,7 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.GroupEntry._ID + " ASC";
+        String sortOrder = DataContract.GroupEntry.COLUMN_NAME_GROUP_ID + " ASC";
 
         Cursor c = mDb.query(
                 DataContract.GroupEntry.TABLE_NAME,    // The table to query
@@ -108,7 +112,7 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.GroupEntry._ID + " ASC";
+        String sortOrder = DataContract.GroupEntry.COLUMN_NAME_GROUP_ID + " ASC";
 
         return mDb.query(
                 DataContract.GroupEntry.TABLE_NAME,    // The table to query

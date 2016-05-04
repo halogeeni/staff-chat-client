@@ -24,7 +24,6 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
     }
 
@@ -69,7 +68,6 @@ public class LoginActivity extends Activity {
 
         // first check that inputs contain characters
         if(urlInput.length() > 0 && userIdInput.length() > 0) {
-
 
             try {
                 responseCode= new DownloadUserXmlTask().execute(userUrl+userIdInput).get();

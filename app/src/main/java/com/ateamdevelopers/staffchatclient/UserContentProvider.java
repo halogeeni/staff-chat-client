@@ -38,17 +38,7 @@ public class UserContentProvider extends ContentProvider {
             return null;
         }
     }
-/*
-    public Cursor customQuery(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        if(uriMatcher.match(uri) == USERS) {
-            Cursor cursor = mUserDb.getCustomUserCursor(projection, selection, selectionArgs, sortOrder);
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
-        } else {
-            return null;
-        }
-    }
-*/
+
     @Override
     public String getType(Uri uri) {
         return null;
@@ -68,7 +58,9 @@ public class UserContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int rows = mUserDb.deleteAll();
+        getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+        return rows;
     }
 
     @Override

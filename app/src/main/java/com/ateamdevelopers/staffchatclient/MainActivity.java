@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private Channel channel;
 
-    // action bar title - we will eventually migrate to this
-    private String mTitle;
-
     private String[] messageProjection = {
             DataContract.MessageEntry._ID,
             DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
@@ -80,28 +77,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP
     };
 
-    // REST URL - should be eventually the root, e.g. http://10.0.2.2:8080/StaffChat/webresources/
+    // REST URLs
     private final String postMessageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/add";
     private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages";
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
+    /*
     // For Joel's computer only, cos why not
-    /*private final String postMessageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/add";
-    private final String messageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/broadcast";
-    private final String userUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/users";
-    private final String groupUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/groups";*/
+    private final String postMessageUrl = "http://192.168.42.68:8080/RESTfulWebApp/webresources/messages/add";
+    private final String messageUrl = "http://192.168.42.68:8080/RESTfulWebApp/webresources/messages";
+    private final String userUrl = "http://192.168.42.68:8080/RESTfulWebApp/webresources/users";
+    private final String groupUrl = "http://192.168.42.68:8080/RESTfulWebApp/webresources/groups";
+    */
 
-    //private Uri mEndpointURI;
     private MessageDatabaseHelper mMessageDbHelper;
     private GroupDatabaseHelper mGroupDbHelper;
     private UserDatabaseHelper mUserDbHelper;
     private SimpleCursorAdapter mMessageAdapter, mUserAdapter, mGroupAdapter;
-    private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
     private DrawerLayout mDrawer;
-    private int mLastMessageCount;
+    private int mLastMessageCount, mLastUserCount, mLastGroupCount;
 
     private Timer mTimer;
 
@@ -117,25 +114,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         groupSelection = 0;
         userSelection = 0;
         mLastMessageCount = 0;
+        mLastUserCount = 0;
+        mLastGroupCount = 0;
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
-        mMessageDbHelper.initDb();
-
         mGroupDbHelper = new GroupDatabaseHelper(this);
-        mGroupDbHelper.initDb();
-
         mUserDbHelper = new UserDatabaseHelper(this);
+        mMessageDbHelper.initDb();
+        mGroupDbHelper.initDb();
         mUserDbHelper.initDb();
 
+        // get navigation drawer
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mLastMessages = new ArrayList<>();
         mLastGroups = new ArrayList<>();
         mLastUsers = new ArrayList<>();
 
+        // set action bar title
         getSupportActionBar().setTitle("Broadcast");
 
+        // set cursor adapters
         mMessageAdapter = new SimpleCursorAdapter(this,
                 R.layout.message_list_item, null,
                 new String[]{DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
@@ -181,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             usernames.close();
                         }
 
-
                     case R.id.messageBody:
                         String body = StringEscapeUtils.unescapeHtml4(aCursor.getString(aColumnIndex));
                         ((TextView) aView).setText(body);
@@ -206,11 +204,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ListView messageListView = (ListView) findViewById(R.id.messageList);
         ListView userListView = (ListView) findViewById(R.id.drawer_users);
         ListView groupListView = (ListView) findViewById(R.id.drawer_groups);
-
         messageListView.setAdapter(mMessageAdapter);
         userListView.setAdapter(mUserAdapter);
         groupListView.setAdapter(mGroupAdapter);
 
+        // start polling, store message polling task
         mTimer = startMessagePollingTask();
         startUserPollingTask();
         startGroupPollingTask();
@@ -229,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mTimer.cancel();
                 // clear message db table & counter
                 getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
-                mLastMessages.clear();
                 mLastMessageCount = 0;
                 // start polling
                 mTimer = startMessagePollingTask();
@@ -251,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 channel = Channel.CHANNEL_GROUP;
                 mTimer.cancel();
                 getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
-                mLastMessages.clear();
                 mLastMessageCount = 0;
                 mTimer = startMessagePollingTask();
                 mDrawer.closeDrawers();
@@ -268,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mTimer.cancel();
         // clear message db table & counter
         getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
-        mLastMessages.clear();
         mLastMessageCount = 0;
         // start new polling
         mTimer = startMessagePollingTask();
@@ -280,14 +275,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void sendButtonClicked(View v) {
-        try {
-            new UploadXmlTask().execute(postMessageUrl);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-        }
+        new UploadXmlTask().execute(postMessageUrl);
     }
 
-    // 2 sec message polling timer
+    // message polling timer
     protected Timer startMessagePollingTask() {
         final Handler handler = new Handler();
         Timer timer = new Timer();
@@ -305,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 1000); //execute every 2 secs
+        timer.schedule(doAsynchronousTask, 0, 1000); //execute every second
         return timer;
     }
 
@@ -442,8 +433,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private String downloadMessageXml(String urlString) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in downloadMessageXml()");
-
         InputStream stream = null;
         XmlMessageParser messageParser = new XmlMessageParser();
         String result = "";
@@ -468,66 +457,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.getInputStream();
             stream = new BufferedInputStream(conn.getInputStream());
 
-            // not the most elegant solution, but works for now
             List<Message> messageList = messageParser.parse(stream);
-
-            /*
-            Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
-            if (mLastMessages.isEmpty()) {
-                mLastMessages.addAll(messageList);
-                // Create a new map of values, where column names are the keys
-                ContentValues values = new ContentValues();
-                for (Message m : messageList) {
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
-
-                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
-                }
-                Log.d(TAG, "messageList in: " + messageList.toString());
-            } else if (messageList.size() > mLastMessages.size()) {
-                Log.d(TAG, "fetched message list contained new entries");
-
-                List<Message> tempMessageList = new ArrayList<>(messageList);
-
-                // TODO fix this
-                for(int i = 0; i < mLastMessages.size(); i++) {
-                    // TODO message ids?
-                    if(messageList.get(i).getTimestamp() == mLastMessages.get(i).getTimestamp()) {
-                        messageList.remove(i);
-                    }
-                }
-
-                //messageList.removeAll(mLastMessages);
-                Log.d(TAG, "messageList after removeAll(): " + messageList.toString());
-                ContentValues values = new ContentValues();
-
-                for (Message m : messageList) {
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
-                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
-                }
-
-                mLastMessages.clear();
-                mLastMessages.addAll(tempMessageList);
-            }
-            */
-
-            Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
 
             if (messageList == null || messageList.size() == 0) {
                 // no messages or something went wrong with the parsing
                 getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
-
             } else if (messageList.size() > mLastMessageCount) {
                 int newMessages = messageList.size() - mLastMessageCount;
-                // clear table
-                //getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
                 // insert new values
                 ContentValues values = new ContentValues();
                 for (int i = 0; i < newMessages; i++) {
@@ -539,14 +475,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-                /*for (Message m : messageList) {
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
-                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
-                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
-                }*/
                 // update last poll message counter
                 mLastMessageCount = messageList.size();
             } else if (messageList.size() < mLastMessageCount) {
@@ -564,8 +492,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private String downloadUserXml(String urlString) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in downloadUserXml()");
-
         InputStream stream = null;
         XmlUserParser userParser = new XmlUserParser();
         String result = "";
@@ -578,36 +504,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.getInputStream();
             stream = new BufferedInputStream(conn.getInputStream());
 
-            // not the most elegant solution, but works for now
             List<User> userList = userParser.parse(stream);
-            Log.d(TAG, "in downloadUserXml - mLastUsers now: " + mLastUsers);
-            if (mLastUsers.isEmpty()) {
-                mLastUsers.addAll(userList);
-                // Create a new map of values, where column names are the keys
+
+            if (userList == null || userList.size() == 0) {
+                // no users or something went wrong with the parsing
+                getContentResolver().delete(UserContentProvider.CONTENT_URI, null, null);
+            } else if (userList.size() > mLastUserCount) {
+                int newUsers = userList.size() - mLastUserCount;
+                // insert new values
                 ContentValues values = new ContentValues();
-                for (User u : userList) {
+                for (int i = 0; i < newUsers; i++) {
+                    User u = userList.get(userList.size() - i - 1);
                     values.put(DataContract.UserEntry.COLUMN_NAME_USERID, u.getId());
                     values.put(DataContract.UserEntry.COLUMN_NAME_USER_NAME, u.getName());
                     getContentResolver().insert(UserContentProvider.CONTENT_URI, values);
                 }
-            } else if (userList.size() > mLastUsers.size()) {
-                Log.d(TAG, "fetched user list contained new entries");
-
-                List<User> tempUserList = new ArrayList<>(userList);
-
-                userList.removeAll(mLastUsers);
-                ContentValues values = new ContentValues();
-
-                for (User u : userList) {
-                    values.put(DataContract.UserEntry.COLUMN_NAME_USERID, u.getId());
-                    values.put(DataContract.UserEntry.COLUMN_NAME_USER_NAME, u.getName());
-                    getContentResolver().insert(UserContentProvider.CONTENT_URI, values);
-                }
-
-                mLastUsers.clear();
-                mLastUsers.addAll(tempUserList);
+                // update last poll user counter
+                mLastUserCount = userList.size();
+            } else if (userList.size() < mLastUserCount) {
+                // something went terribly wrong... lets clear users and start over
+                getContentResolver().delete(UserContentProvider.CONTENT_URI, null, null);
+                mLastUserCount = 0;
             }
-
         } finally {
             if (stream != null) {
                 stream.close();
@@ -619,8 +537,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     private String downloadGroupXml(String urlString) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in downloadGroupXml()");
-
         InputStream stream = null;
         XmlGroupParser groupParser = new XmlGroupParser();
         String result = "";
@@ -633,35 +549,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.getInputStream();
             stream = new BufferedInputStream(conn.getInputStream());
 
-            // not the most elegant solution, but works for now
             List<Group> groupList = groupParser.parse(stream);
-            Log.d(TAG, "in downloadGroupXml - mLastGroups now: " + mLastGroups);
-            if (mLastGroups.isEmpty()) {
-                mLastGroups.addAll(groupList);
-                // Create a new map of values, where column names are the keys
+
+            if (groupList == null || groupList.size() == 0) {
+                // no groups or something went wrong with the parsing
+                getContentResolver().delete(GroupContentProvider.CONTENT_URI, null, null);
+            } else if (groupList.size() > mLastGroupCount) {
+                int newGroups = groupList.size() - mLastGroupCount;
+                // insert new values
                 ContentValues values = new ContentValues();
-                for (Group g : groupList) {
+                for (int i = 0; i < newGroups; i++) {
+                    Group g = groupList.get(groupList.size() - i - 1);
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_ID, g.getId());
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
                     getContentResolver().insert(GroupContentProvider.CONTENT_URI, values);
                 }
-            } else if (groupList.size() > mLastGroups.size()) {
-                Log.d(TAG, "fetched group list contained new entries");
-
-                List<Group> tempGroupList = new ArrayList<>(groupList);
-
-                groupList.removeAll(mLastGroups);
-                ContentValues values = new ContentValues();
-
-                for (Group g : groupList) {
-                    values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_ID, g.getId());
-                    values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
-                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
-                }
-                mLastGroups.clear();
-                mLastGroups.addAll(tempGroupList);
+                // update last poll group counter
+                mLastGroupCount = groupList.size();
+            } else if (groupList.size() < mLastGroupCount) {
+                // something went terribly wrong... lets clear groups and start over
+                getContentResolver().delete(GroupContentProvider.CONTENT_URI, null, null);
+                mLastGroupCount = 0;
             }
-
         } finally {
             if (stream != null) {
                 stream.close();
@@ -687,9 +596,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void uploadXml(String urlString) throws XmlPullParserException, IOException {
-
-        Log.d(TAG, "in uploadXml()");
-
         // disable button on POST
         runOnUiThread(new Runnable() {
             @Override
@@ -705,11 +611,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        Log.d(TAG, "in uploadXml() - fetched messagebody: " + messageBody);
-
         try {
-            Log.d(TAG, "in uploadXml() - POST setup");
-
             String body = "<message><body><text>" + messageBody + "</text></body>" +
                     "<channel>" + channel.toString() + "</channel><fromUserId>" + currentUser +
                     "</fromUserId><toUserId>" + userSelection + "</toUserId><toGroupId>" +
@@ -721,7 +623,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.setFixedLengthStreamingMode(body.getBytes().length);
             conn.setRequestProperty("Content-Type", "application/xml; charset=\"utf-8\"");
 
-            Log.d(TAG, "in uploadXml() - sending XML data to server:\n" + body);
             output = new BufferedOutputStream(conn.getOutputStream());
             output.write(body.getBytes());
             output.flush();
@@ -739,7 +640,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             if (output != null) {
                 output.close();
             }
-            Log.d(TAG, "in uploadXml() - disconnecting");
             conn.disconnect();
             // disable button on POST
             runOnUiThread(new Runnable() {

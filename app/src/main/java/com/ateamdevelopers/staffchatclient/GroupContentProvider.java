@@ -60,7 +60,9 @@ public class GroupContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int rows = mGroupDb.deleteAll();
+        getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+        return rows;
     }
 
     @Override
