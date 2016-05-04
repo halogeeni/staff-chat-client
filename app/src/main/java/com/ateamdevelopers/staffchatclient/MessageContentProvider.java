@@ -38,10 +38,12 @@ public class MessageContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if(uriMatcher.match(uri) == MESSAGES){
-            Cursor cursor = mMessageDb.getMessageCursor();
+            // ignoring sortOrder as we are always sorting per timestamps
+            Cursor cursor = mMessageDb.getCustomMessageCursor(projection, selection, selectionArgs);
+            //Cursor cursor = mMessageDb.getMessageCursor();
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             return cursor;
-        } else{
+        } else {
             return null;
         }
     }

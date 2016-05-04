@@ -74,7 +74,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
 
         // How you want the results sorted in the resulting Cursor
         // TODO should be based on timestamp?
-        String sortOrder = DataContract.MessageEntry._ID + " ASC";
+        String sortOrder = DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " ASC";
 
         Cursor c = mDb.query(
                 DataContract.MessageEntry.TABLE_NAME,    // The table to query
@@ -113,6 +113,23 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         return messages;
     }
 
+    public Cursor getCustomMessageCursor(String[] projection, String selection, String[] selectionArgs) {
+        mDb = getReadableDatabase();
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder = DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " ASC";
+
+        return mDb.query(
+                DataContract.MessageEntry.TABLE_NAME,       // The table to query
+                projection,                                 // The columns to return
+                selection,                                  // The columns for the WHERE clause
+                selectionArgs,                              // The values for the WHERE clause
+                null,                                       // don't group the rows
+                null,                                       // don't filter by row groups
+                sortOrder                                   // The sort order
+        );
+    }
+
     public Cursor getMessageCursor() {
         mDb = getReadableDatabase();
 
@@ -128,7 +145,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.MessageEntry._ID + " ASC";
+        String sortOrder = DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " ASC";
 
         return mDb.query(
                 DataContract.MessageEntry.TABLE_NAME,       // The table to query

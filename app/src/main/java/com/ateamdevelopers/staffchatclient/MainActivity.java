@@ -156,7 +156,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
                 switch (aView.getId()) {
                     case R.id.messageUsername:
+                        Log.d(TAG, "aColumnIndex now: " + aColumnIndex);
+                        Log.d(TAG, "aView id now: " + aView.getId());
+                        Log.d(TAG, "aCursor column count: " + aCursor.getColumnCount());
+                        Log.d(TAG, "aCursor row count: " + aCursor.getCount());
                         int userId = aCursor.getInt(aColumnIndex);
+                        Log.d(TAG, "aCursor id (userId?) now: " + userId);
                         Cursor usernames =
                                 getContentResolver().query(UserContentProvider.CONTENT_URI,
                                         new String[]{DataContract.UserEntry.COLUMN_NAME_USERID,
@@ -171,10 +176,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                         // TODO username binding not tested yet!!
                         if (usernames.getCount() > 0) {
-                            //Log.d(TAG, usernames.toString());
-                            ((TextView) aView).setText("käyttäjänimi");
-                            //((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
-                            //aCursor.close();
+                            ((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
                             return true;
                         } else {
                             //aCursor.close();
