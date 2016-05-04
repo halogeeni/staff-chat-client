@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 public class UserContentProvider extends ContentProvider {
     public static final String PROVIDER_NAME = "com.ateamdevelopers.staffchatclient.UserContentProvider";
@@ -29,15 +30,25 @@ public class UserContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        if(uriMatcher.match(uri) == USERS){
+        if(uriMatcher.match(uri) == USERS) {
             Cursor cursor = mUserDb.getUserCursor();
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             return cursor;
-        } else{
+        } else {
             return null;
         }
     }
-
+/*
+    public Cursor customQuery(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        if(uriMatcher.match(uri) == USERS) {
+            Cursor cursor = mUserDb.getCustomUserCursor(projection, selection, selectionArgs, sortOrder);
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+*/
     @Override
     public String getType(Uri uri) {
         return null;

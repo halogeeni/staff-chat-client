@@ -20,6 +20,7 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,7 +31,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
     private DrawerLayout mDrawer;
+    private int mLastMessageCount;
 
     private Timer mTimer;
 
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // default contact selection values
         groupSelection = 0;
         userSelection = 0;
+        mLastMessageCount = 0;
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
@@ -145,6 +150,56 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new String[]{DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME},
                 new int[]{R.id.groupName}, CursorAdapter.NO_SELECTION);
 
+        // setup a view binder to:
+        //  * convert timestamps --> date strings
+        //  * userids --> full names
+        mMessageAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
+                switch (aView.getId()) {
+                    case R.id.messageUsername:
+                        int userId = aCursor.getInt(aColumnIndex);
+                        Cursor usernames =
+                                getContentResolver().query(UserContentProvider.CONTENT_URI,
+                                        new String[]{DataContract.UserEntry.COLUMN_NAME_USERID,
+                                                DataContract.UserEntry.COLUMN_NAME_USER_NAME},
+                                        DataContract.UserEntry.COLUMN_NAME_USERID + " = ?",
+                                        new String[]{String.valueOf(userId)}, null);
+                        Log.d(TAG, "usernames cursor row count: " + usernames.getCount());
+                        Log.d(TAG, "usernames cursor column count: " + usernames.getColumnCount());
+                        Log.d(TAG, "cursor column: " + aCursor.getColumnName(aColumnIndex));
+
+                        usernames.moveToPosition(userId);
+
+                        // TODO username binding not tested yet!!
+                        if (usernames.getCount() > 0) {
+                            //Log.d(TAG, usernames.toString());
+                            ((TextView) aView).setText("käyttäjänimi");
+                            //((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
+                            aCursor.close();
+                            return true;
+                        } else {
+                            aCursor.close();
+                            return false;
+                        }
+
+                    case R.id.messageTimestamp:
+                        try {
+                            long timestamp = aCursor.getLong(aColumnIndex);
+                            Date d = new Date(timestamp);
+                            SimpleDateFormat s = new SimpleDateFormat();
+                            ((TextView) aView).setText(s.format(d));
+                            aCursor.close();
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
+                }
+                // not desired view...
+                aCursor.close();
+                return false;
+            }
+        });
+
         ListView messageListView = (ListView) findViewById(R.id.messageList);
         ListView userListView = (ListView) findViewById(R.id.drawer_users);
         ListView groupListView = (ListView) findViewById(R.id.drawer_groups);
@@ -169,9 +224,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.d(TAG, "userList item # " + id + " clicked");
                 userSelection = position;
                 channel = Channel.CHANNEL_PRIVATE;
+                // cancel active polling task
                 mTimer.cancel();
-                mMessageDbHelper.initDb();
+                // clear message db table & counter
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
                 mLastMessages.clear();
+                mLastMessageCount = 0;
                 mTimer = startMessagePollingTask();
                 mDrawer.closeDrawers();
             }
@@ -184,10 +242,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 groupSelection = position;
                 Log.d(TAG, "groupSelection now: " + groupSelection);
                 channel = Channel.CHANNEL_GROUP;
+                // cancel active polling task
                 mTimer.cancel();
-                mMessageDbHelper.initDb();
+                // clear message db table & counter
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
                 mLastMessages.clear();
+                mLastMessageCount = 0;
+                // start new polling
                 mTimer = startMessagePollingTask();
+                // close navigation drawer
                 mDrawer.closeDrawers();
             }
         });
@@ -370,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 urlString += ("/" + currentUser + "/private/" + userSelection);
                 break;
             case CHANNEL_GROUP:
-                urlString +=("/group/" + groupSelection);
+                urlString += ("/group/" + groupSelection);
                 break;
         }
 
@@ -432,21 +495,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             */
 
-            // clear table
-            getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+            Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
 
-            // insert new values
-            ContentValues values = new ContentValues();
+            if (messageList == null || messageList.size() == 0) {
+                // no messages or something went wrong with the parsing
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
 
-            for (Message m : messageList) {
-                values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
-                values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
-                values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
-                values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
-                values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
-                getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+            } else if (messageList.size() > mLastMessageCount) {
+                int newMessages = messageList.size() - mLastMessageCount;
+                // clear table
+                //getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                // insert new values
+                ContentValues values = new ContentValues();
+                for (int i = 0; i < newMessages; i++) {
+                    Message m = messageList.get(messageList.size() - i - 1);
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+                }
+                /*for (Message m : messageList) {
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+                }*/
+                // update last poll message counter
+                mLastMessageCount = messageList.size();
+            } else if (messageList.size() < mLastMessageCount) {
+                // something went terribly wrong... lets clear messages and start over
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                mLastMessageCount = 0;
             }
-
         } finally {
             if (stream != null) {
                 stream.close();
@@ -551,7 +635,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-
                 mLastGroups.clear();
                 mLastGroups.addAll(tempGroupList);
             }
@@ -615,7 +698,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.setFixedLengthStreamingMode(body.getBytes().length);
             conn.setRequestProperty("Content-Type", "application/xml; charset=\"utf-8\"");
 
-            Log.d(TAG, "in uploadXml() - sending XML data to server:\n"+body);
+            Log.d(TAG, "in uploadXml() - sending XML data to server:\n" + body);
             output = new BufferedOutputStream(conn.getOutputStream());
             output.write(body.getBytes());
             output.flush();
