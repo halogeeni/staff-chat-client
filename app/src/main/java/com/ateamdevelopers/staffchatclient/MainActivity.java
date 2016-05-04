@@ -175,10 +175,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             //Log.d(TAG, usernames.toString());
                             ((TextView) aView).setText("käyttäjänimi");
                             //((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
-                            aCursor.close();
+                            //aCursor.close();
                             return true;
                         } else {
-                            aCursor.close();
+                            //aCursor.close();
                             return false;
                         }
 
@@ -188,14 +188,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             Date d = new Date(timestamp);
                             SimpleDateFormat s = new SimpleDateFormat();
                             ((TextView) aView).setText(s.format(d));
-                            aCursor.close();
+                            //aCursor.close();
                             return true;
                         } catch (Exception e) {
                             return false;
                         }
                 }
                 // not desired view...
-                aCursor.close();
+                //aCursor.close();
                 return false;
             }
         });
