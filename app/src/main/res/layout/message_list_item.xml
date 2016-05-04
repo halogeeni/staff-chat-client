@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="7dp" >
 
     <TextView
         android:id="@+id/messageBody"
@@ -11,7 +12,7 @@
         android:typeface="sans"
         android:gravity="left"
         android:text="body"
-        android:textSize="17dp"
+        android:textSize="17sp"
         android:padding="5dp" />
 
     <TextView
@@ -21,7 +22,7 @@
         android:typeface="sans"
         android:text="username"
         android:gravity="right"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:paddingRight="5dp" />
 
     <TextView

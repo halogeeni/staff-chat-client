@@ -16,11 +16,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mLastGroups = new ArrayList<>();
         mLastUsers = new ArrayList<>();
 
+        getSupportActionBar().setTitle("Broadcast");
+
         mMessageAdapter = new SimpleCursorAdapter(this,
                 R.layout.message_list_item, null,
                 new String[]{DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
@@ -156,32 +160,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
                 switch (aView.getId()) {
                     case R.id.messageUsername:
-                        Log.d(TAG, "aColumnIndex now: " + aColumnIndex);
-                        Log.d(TAG, "aView id now: " + aView.getId());
-                        Log.d(TAG, "aCursor column count: " + aCursor.getColumnCount());
-                        Log.d(TAG, "aCursor row count: " + aCursor.getCount());
                         int userId = aCursor.getInt(aColumnIndex);
-                        Log.d(TAG, "aCursor id (userId?) now: " + userId);
                         Cursor usernames =
                                 getContentResolver().query(UserContentProvider.CONTENT_URI,
                                         new String[]{DataContract.UserEntry.COLUMN_NAME_USERID,
                                                 DataContract.UserEntry.COLUMN_NAME_USER_NAME},
                                         DataContract.UserEntry.COLUMN_NAME_USERID + " = ?",
                                         new String[]{String.valueOf(userId)}, null);
-                        Log.d(TAG, "usernames cursor row count: " + usernames.getCount());
-                        Log.d(TAG, "usernames cursor column count: " + usernames.getColumnCount());
-                        Log.d(TAG, "cursor column: " + aCursor.getColumnName(aColumnIndex));
 
                         usernames.moveToPosition(userId);
 
-                        // TODO username binding not tested yet!!
-                        if (usernames.getCount() > 0) {
-                            ((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
-                            return true;
-                        } else {
-                            //aCursor.close();
-                            return false;
+                        try {
+                            if (usernames.getCount() > 0) {
+                                ((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } finally {
+                            usernames.close();
                         }
+
 
                     case R.id.messageBody:
                         String body = StringEscapeUtils.unescapeHtml4(aCursor.getString(aColumnIndex));
@@ -194,14 +193,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             Date d = new Date(timestamp);
                             SimpleDateFormat s = new SimpleDateFormat();
                             ((TextView) aView).setText(s.format(d));
-                            //aCursor.close();
                             return true;
                         } catch (Exception e) {
                             return false;
                         }
                 }
-                // not desired view...
-                //aCursor.close();
+                // fallback - not desired view...
                 return false;
             }
         });
@@ -218,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         startUserPollingTask();
         startGroupPollingTask();
 
-        // TODO maybe re-init or reset loaders on item clicks?
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
         getLoaderManager().initLoader(GROUP_LOADER_ID, null, this);
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
@@ -227,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "userList item # " + id + " clicked");
                 userSelection = position;
                 channel = Channel.CHANNEL_PRIVATE;
                 // cancel active polling task
@@ -236,8 +231,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
                 mLastMessages.clear();
                 mLastMessageCount = 0;
+                // start polling
                 mTimer = startMessagePollingTask();
+                // close navigation drawer
                 mDrawer.closeDrawers();
+                // dynamically change action bar title
+                TextView t = (TextView)((LinearLayout) view).getChildAt(0);
+                getSupportActionBar().setTitle(t.getText().toString());
+                getSupportActionBar().setSubtitle("private chat");
             }
         });
 
@@ -248,16 +249,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 groupSelection = position;
                 Log.d(TAG, "groupSelection now: " + groupSelection);
                 channel = Channel.CHANNEL_GROUP;
-                // cancel active polling task
                 mTimer.cancel();
-                // clear message db table & counter
                 getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
                 mLastMessages.clear();
                 mLastMessageCount = 0;
-                // start new polling
                 mTimer = startMessagePollingTask();
-                // close navigation drawer
                 mDrawer.closeDrawers();
+                TextView t = (TextView)((LinearLayout) view).getChildAt(0);
+                getSupportActionBar().setTitle(t.getText().toString());
+                getSupportActionBar().setSubtitle("group chat");
             }
         });
     }
@@ -274,6 +274,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mTimer = startMessagePollingTask();
         // close navigation drawer
         mDrawer.closeDrawers();
+        // hardcoded action bar title
+        getSupportActionBar().setTitle("Broadcast");
+        getSupportActionBar().setSubtitle("");
     }
 
     public void sendButtonClicked(View v) {
