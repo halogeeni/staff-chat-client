@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends Activity {
 
-    private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users/";
+    private final String userUrl = "http://192.168.42.68:8080/RESTfulWebApp/webresources/users/";
     private static final String TAG = "LoginActivity";
 
     @Override
