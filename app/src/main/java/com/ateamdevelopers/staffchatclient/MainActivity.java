@@ -22,6 +22,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
@@ -181,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             //aCursor.close();
                             return false;
                         }
+
+                    case R.id.messageBody:
+                        String body = StringEscapeUtils.unescapeHtml4(aCursor.getString(aColumnIndex));
+                        ((TextView) aView).setText(body);
+                        return true;
 
                     case R.id.messageTimestamp:
                         try {
