@@ -53,53 +53,6 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         return mDb.delete(DataContract.GroupEntry.TABLE_NAME, null, null);
     }
 
-    public List getGroupList() {
-        List<Group> groups = new ArrayList<>();
-        mDb = getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                DataContract.GroupEntry._ID,
-                DataContract.GroupEntry.COLUMN_NAME_GROUP_ID,
-                DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME
-        };
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.GroupEntry.COLUMN_NAME_GROUP_ID + " ASC";
-
-        Cursor c = mDb.query(
-                DataContract.GroupEntry.TABLE_NAME,    // The table to query
-                projection,                                 // The columns to return
-                null,                                       // The columns for the WHERE clause
-                null,                                       // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                sortOrder                                   // The sort order
-        );
-
-        try {
-            c.moveToFirst();
-
-            int groupIdColumn = c.getColumnIndex(DataContract.GroupEntry.COLUMN_NAME_GROUP_ID);
-            int groupNameColumn = c.getColumnIndex(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME);
-
-            while(c.getString(groupIdColumn) != null) {
-                int groupId = Integer.parseInt(c.getString(groupIdColumn));
-                String name = c.getString(groupNameColumn);
-
-                Group g = new Group(groupId, name);
-                groups.add(g);
-
-                c.moveToNext();
-            }
-        } finally {
-            c.close();
-        }
-
-        return groups;
-    }
-
     public Cursor getGroupCursor() {
         mDb = getReadableDatabase();
 

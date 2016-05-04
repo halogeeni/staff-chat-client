@@ -57,63 +57,7 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         return mDb.delete(DataContract.MessageEntry.TABLE_NAME, null, null);
     }
 
-    public List getMessageList() {
-        List<Message> messages = new ArrayList<>();
-        mDb = getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                DataContract.MessageEntry._ID,
-                DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
-                DataContract.MessageEntry.COLUMN_NAME_TO_USER,
-                DataContract.MessageEntry.COLUMN_NAME_TO_GROUP,
-                DataContract.MessageEntry.COLUMN_NAME_BODY,
-                DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP
-        };
-
-        // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
-        String sortOrder = DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " ASC";
-
-        Cursor c = mDb.query(
-                DataContract.MessageEntry.TABLE_NAME,    // The table to query
-                projection,                                 // The columns to return
-                null,                                       // The columns for the WHERE clause
-                null,                                       // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                sortOrder                                   // The sort order
-        );
-
-        try {
-            c.moveToFirst();
-
-            int fromUserIdColumn = c.getColumnIndex(DataContract.MessageEntry.COLUMN_NAME_FROM_USER);
-            int toUserIdColumn = c.getColumnIndex(DataContract.MessageEntry.COLUMN_NAME_TO_USER);
-            int toGroupIdColumn = c.getColumnIndex(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP);
-            int timestampColumn = c.getColumnIndex(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP);
-            int bodyColumn = c.getColumnIndex(DataContract.MessageEntry.COLUMN_NAME_BODY);
-
-            while(c.getString(fromUserIdColumn) != null) {
-                String body = c.getString(bodyColumn);
-                int fromUserId = Integer.parseInt(c.getString(fromUserIdColumn));
-                int toUserId = Integer.getInteger(c.getString(toUserIdColumn));
-                int toGroupId = Integer.getInteger(c.getString(toGroupIdColumn));
-                long timestamp = Long.parseLong(c.getString(timestampColumn));
-
-                Message m = new Message(fromUserId, toUserId, body, toGroupId, timestamp);
-                messages.add(m);
-
-                c.moveToNext();
-            }
-        } finally {
-            c.close();
-        }
-        return messages;
-    }
-
-    public Cursor getCustomMessageCursor(String[] projection, String selection, String[] selectionArgs) {
+    public Cursor getMessageCursor(String[] projection, String selection, String[] selectionArgs) {
         mDb = getReadableDatabase();
 
         // How you want the results sorted in the resulting Cursor
@@ -124,34 +68,6 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
                 projection,                                 // The columns to return
                 selection,                                  // The columns for the WHERE clause
                 selectionArgs,                              // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                sortOrder                                   // The sort order
-        );
-    }
-
-    public Cursor getMessageCursor() {
-        mDb = getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                DataContract.MessageEntry._ID,
-                DataContract.MessageEntry.COLUMN_NAME_FROM_USER,
-                DataContract.MessageEntry.COLUMN_NAME_TO_USER,
-                DataContract.MessageEntry.COLUMN_NAME_TO_GROUP,
-                DataContract.MessageEntry.COLUMN_NAME_BODY,
-                DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP
-        };
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " ASC";
-
-        return mDb.query(
-                DataContract.MessageEntry.TABLE_NAME,       // The table to query
-                projection,                                 // The columns to return
-                null,                                       // The columns for the WHERE clause
-                null,                                       // The values for the WHERE clause
                 null,                                       // don't group the rows
                 null,                                       // don't filter by row groups
                 sortOrder                                   // The sort order

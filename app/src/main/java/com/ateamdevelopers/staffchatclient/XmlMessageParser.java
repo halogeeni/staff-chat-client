@@ -30,7 +30,6 @@ public class XmlMessageParser {
     }
 
     private List<Message> readMessages(XmlPullParser parser) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in readMessages");
         List messages = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, ns, "messages");
@@ -42,18 +41,13 @@ public class XmlMessageParser {
             // Starts by looking for the entry tag
             if (name.equals("message")) {
                 messages.add(readSingleMessage(parser));
-                Log.d(TAG, "read message");
             } else {
                 skip(parser);
             }
         }
 
-        //Log.d(TAG, "message 0 now: " + messages.get(0).toString());
-
         return messages;
     }
-
-    // TODO read group messages, read user-to-user messages
 
     // just broadcast messages so far...
     private Message readSingleMessage(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -65,14 +59,11 @@ public class XmlMessageParser {
 
         // XML node parse loop
         while (parser.next() != XmlPullParser.END_TAG) {
-            Log.d(TAG, "in parsing while-loop");
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
 
             String tag = parser.getName();
-
-            Log.d(TAG, "tag now: " + tag);
 
             if (tag.equals("body")) {
                 parser.next();
@@ -85,20 +76,15 @@ public class XmlMessageParser {
 
         // XML node parse loop
         while (parser.next() != XmlPullParser.END_TAG) {
-            Log.d(TAG, "in parsing while-loop");
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
 
             String tag = parser.getName();
 
-            Log.d(TAG, "tag now: " + tag);
-
             if (tag.equals("fromUserId")) {
-                Log.d(TAG, "fromUserId tag found");
                 fromUserId = Integer.parseInt(readTagValue(parser, "fromUserId"));
             } else if (tag.equals("timestamp")) {
-                Log.d(TAG, "timestamp tag found");
                 // timestamp defaults to unix epoch in case of errors
                 timestamp = Long.parseLong(readTagValue(parser, "timestamp"));
             } else {
@@ -112,7 +98,6 @@ public class XmlMessageParser {
     private String readTagValue(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, tag);
         String value = readText(parser);
-        Log.d(TAG, "value read: " + value);
         parser.require(XmlPullParser.END_TAG, ns, tag);
         return value;
     }

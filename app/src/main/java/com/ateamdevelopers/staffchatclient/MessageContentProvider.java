@@ -1,7 +1,6 @@
 package com.ateamdevelopers.staffchatclient;
 
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -39,8 +38,7 @@ public class MessageContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if(uriMatcher.match(uri) == MESSAGES){
             // ignoring sortOrder as we are always sorting per timestamps
-            Cursor cursor = mMessageDb.getCustomMessageCursor(projection, selection, selectionArgs);
-            //Cursor cursor = mMessageDb.getMessageCursor();
+            Cursor cursor = mMessageDb.getMessageCursor(projection, selection, selectionArgs);
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             return cursor;
         } else {
@@ -59,11 +57,8 @@ public class MessageContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         try {
             long id = mMessageDb.insertMessage(values);
-            //Uri returnUri = CONTENT_URI;
-            //Uri returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
             getContext().getContentResolver().notifyChange(CONTENT_URI, null);
             return CONTENT_URI;
-            //return returnUri;
         } catch(Exception e) {
             return null;
         }

@@ -16,7 +16,6 @@ public class XmlGroupParser {
     private static final String ns = null;
     private final String TAG = "XmlGroupParser";
 
-
     public List<Group> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -30,7 +29,6 @@ public class XmlGroupParser {
     }
 
     private List<Group> readGroups(XmlPullParser parser) throws XmlPullParserException, IOException {
-        Log.d(TAG, "in readGroups");
         List groups = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, ns, "groups");
@@ -42,13 +40,10 @@ public class XmlGroupParser {
             // Starts by looking for the entry tag
             if (name.equals("group")) {
                 groups.add(readGroup(parser));
-                Log.d(TAG, "read group");
             } else {
                 skip(parser);
             }
         }
-
-        Log.d(TAG, "group 0 now: " + groups.get(0).toString());
 
         return groups;
     }
@@ -61,7 +56,6 @@ public class XmlGroupParser {
 
         // XML node parse loop
         while (parser.next() != XmlPullParser.END_TAG) {
-            Log.d(TAG, "in parsing while-loop");
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
@@ -69,10 +63,8 @@ public class XmlGroupParser {
             String tag = parser.getName();
 
             if (tag.equals("id")) {
-                Log.d(TAG, "id tag found");
                 groupId = Integer.parseInt(readTagValue(parser, "id"));
             } else if (tag.equals("name")) {
-                Log.d(TAG, "name tag found");
                 name = readTagValue(parser, "name");
             } else {
                 skip(parser);
@@ -85,7 +77,6 @@ public class XmlGroupParser {
     private String readTagValue(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, tag);
         String value = readText(parser);
-        Log.d(TAG, "value read: " + value);
         parser.require(XmlPullParser.END_TAG, ns, tag);
         return value;
     }

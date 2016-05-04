@@ -52,52 +52,6 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         return mDb.insert(DataContract.UserEntry.TABLE_NAME, null, values);
     }
 
-    public List getUserList() {
-        List<User> users = new ArrayList<>();
-        mDb = getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                DataContract.UserEntry._ID,
-                DataContract.UserEntry.COLUMN_NAME_USERID,
-                DataContract.UserEntry.COLUMN_NAME_USER_NAME
-        };
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder = DataContract.UserEntry.COLUMN_NAME_USERID + " ASC";
-
-        Cursor c = mDb.query(
-                DataContract.UserEntry.TABLE_NAME,    // The table to query
-                projection,                                 // The columns to return
-                null,                                       // The columns for the WHERE clause
-                null,                                       // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                sortOrder                                   // The sort order
-        );
-
-        try {
-            c.moveToFirst();
-
-            int userIdColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USERID);
-            int nameColumn = c.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME);
-
-            while(c.getString(userIdColumn) != null) {
-                int userId = Integer.parseInt(c.getString(userIdColumn));
-                String name = c.getString(nameColumn);
-
-                User u = new User(userId, name);
-                users.add(u);
-
-                c.moveToNext();
-            }
-        } finally {
-            c.close();
-        }
-        return users;
-    }
-
     public Cursor getUserCursor() {
         mDb = getReadableDatabase();
 

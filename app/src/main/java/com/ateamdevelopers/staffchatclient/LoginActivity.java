@@ -39,16 +39,15 @@ public class LoginActivity extends Activity {
                 return getResources().getString(R.string.xml_error);
             }
         }
-
     }
 
     private String downloadUserXml(String urlString) throws XmlPullParserException, IOException {
-        Log.d(TAG,"Starting httpurlconnection with url: "+urlString);
+        Log.d(TAG, "Starting httpurlconnection with url: " + urlString);
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
         String code = String.valueOf(conn.getResponseCode());
-        Log.d(TAG,"Response code: "+code);
+        Log.d(TAG, "Response code: " + code);
         return code;
 
     }
@@ -64,21 +63,21 @@ public class LoginActivity extends Activity {
         // get user input strings
         String urlInput = urlInputEditText.getText().toString();
         String userIdInput = userInputEditText.getText().toString();
-        String responseCode="";
+        String responseCode = "";
 
         // first check that inputs contain characters
-        if(urlInput.length() > 0 && userIdInput.length() > 0) {
+        if (urlInput.length() > 0 && userIdInput.length() > 0) {
 
             try {
-                responseCode= new DownloadUserXmlTask().execute(userUrl+userIdInput).get();
+                responseCode = new DownloadUserXmlTask().execute(userUrl + userIdInput).get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
 
-            if(responseCode.equals("200")) {
-                Log.d(TAG,"User was found. Continuing into MainActivity");
+            if (responseCode.equals("200")) {
+                Log.d(TAG, "User was found. Continuing into MainActivity");
                 // parse user inputs
                 try {
                     int userid = Integer.parseInt(userIdInput);
@@ -90,8 +89,8 @@ public class LoginActivity extends Activity {
                 } catch (NumberFormatException e) {
                     errorDisplay.setText("User ID must be an integer value");
                 }
-            }else{
-                errorDisplay.setText("No user by ID "+userIdInput+ " was found.");
+            } else {
+                errorDisplay.setText("No user by ID " + userIdInput + " was found.");
             }
         } else {
             errorDisplay.setText("Please fill in all values.");

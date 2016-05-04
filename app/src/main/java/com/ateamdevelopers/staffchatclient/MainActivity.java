@@ -22,7 +22,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
@@ -33,7 +32,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -44,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String TAG = "MainActivity";
     private final int MESSAGE_LOADER_ID = 0x01, GROUP_LOADER_ID = 0x02, USER_LOADER_ID = 0x03;
 
-    private final int currentUser = 0;
+    private int currentUser;
     private int groupSelection;
     private int userSelection;
 
@@ -95,8 +93,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private GroupDatabaseHelper mGroupDbHelper;
     private UserDatabaseHelper mUserDbHelper;
     private SimpleCursorAdapter mMessageAdapter, mUserAdapter, mGroupAdapter;
-    private List<User> mLastUsers;
-    private List<Group> mLastGroups;
     private DrawerLayout mDrawer;
     private int mLastMessageCount, mLastUserCount, mLastGroupCount;
 
@@ -109,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // open broadcast chat by default
         channel = Channel.CHANNEL_BROADCAST;
+
+        // get userid input to loginactivity
+        currentUser = getIntent().getIntExtra("userid", -1);
 
         // default contact selection values
         groupSelection = 0;
@@ -127,9 +126,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // get navigation drawer
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        mLastGroups = new ArrayList<>();
-        mLastUsers = new ArrayList<>();
 
         // set action bar title
         getSupportActionBar().setTitle("Broadcast");

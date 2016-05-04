@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 public class UserContentProvider extends ContentProvider {
     public static final String PROVIDER_NAME = "com.ateamdevelopers.staffchatclient.UserContentProvider";
