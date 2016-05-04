@@ -7,8 +7,7 @@ public final class DataContract {
     public static abstract class UserEntry implements BaseColumns {
         public static final String TABLE_NAME = "users";
         public static final String COLUMN_NAME_USERID = "userId";
-        public static final String COLUMN_NAME_FIRSTNAME = "firstname";
-        public static final String COLUMN_NAME_LASTNAME = "lastname";
+        public static final String COLUMN_NAME_USER_NAME = "name";
     }
 
     public static abstract class GroupEntry implements BaseColumns {

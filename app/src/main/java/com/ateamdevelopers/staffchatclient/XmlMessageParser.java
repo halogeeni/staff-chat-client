@@ -72,11 +72,29 @@ public class XmlMessageParser {
 
             String tag = parser.getName();
 
-            if (tag.equals("text")) {
-                Log.d(TAG, "text tag found");
-                //body = readTagValue(parser, "text");
-                body = parser.nextText();
-            }else if (tag.equals("fromUserId")) {
+            Log.d(TAG, "tag now: " + tag);
+
+            if (tag.equals("body")) {
+                parser.next();
+                body = readText(parser);
+            }
+        }
+
+        // two whiles! surely you are a wizard
+        // - XML parsing wizardry
+
+        // XML node parse loop
+        while (parser.next() != XmlPullParser.END_TAG) {
+            Log.d(TAG, "in parsing while-loop");
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            String tag = parser.getName();
+
+            Log.d(TAG, "tag now: " + tag);
+
+            if (tag.equals("fromUserId")) {
                 Log.d(TAG, "fromUserId tag found");
                 fromUserId = Integer.parseInt(readTagValue(parser, "fromUserId"));
             } else if (tag.equals("timestamp")) {
@@ -102,6 +120,16 @@ public class XmlMessageParser {
 
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String result = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = parser.getText();
+            parser.nextTag();
+        }
+        return result;
+    }
+
+    private String readChildNode(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, tag);
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();

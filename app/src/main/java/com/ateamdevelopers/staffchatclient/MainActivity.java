@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final int MESSAGE_LOADER_ID = 0x01, GROUP_LOADER_ID = 0x02, USER_LOADER_ID = 0x03;
 
     private final int currentUser = 0;
+    private int groupSelection = 0;
+    private int userSelection = 0;
+
+    private Channel channel;
 
     // action bar title - we will eventually migrate to this
     private String mTitle;
@@ -75,6 +79,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
+    // For Joel's computer only, cos why not
+    /*private final String postMessageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/add";
+    private final String messageUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/messages/broadcast";
+    private final String userUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/users";
+    private final String groupUrl = "http://192.168.43.169:8080/RESTfulWebApp/webresources/groups";*/
+
     //private Uri mEndpointURI;
     private MessageDatabaseHelper mMessageDbHelper;
     private GroupDatabaseHelper mGroupDbHelper;
@@ -88,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // open broadcast chat by default
+        channel = Channel.CHANNEL_BROADCAST;
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
@@ -112,9 +125,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mUserAdapter = new SimpleCursorAdapter(this,
                 R.layout.user_list_item, null,
-                new String[]{DataContract.UserEntry.COLUMN_NAME_FIRSTNAME,
-                        DataContract.UserEntry.COLUMN_NAME_LASTNAME},
-                new int[]{R.id.userFirstname, R.id.userLastname}, CursorAdapter.NO_SELECTION);
+                new String[]{DataContract.UserEntry.COLUMN_NAME_USER_NAME},
+                new int[]{R.id.userName}, CursorAdapter.NO_SELECTION);
 
         mGroupAdapter = new SimpleCursorAdapter(this,
                 R.layout.group_list_item, null,
@@ -383,8 +395,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 ContentValues values = new ContentValues();
                 for (User u : userList) {
                     values.put(DataContract.UserEntry.COLUMN_NAME_USERID, u.getId());
-                    values.put(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME, u.getFirstname());
-                    values.put(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME, u.getLastname());
+                    values.put(DataContract.UserEntry.COLUMN_NAME_USER_NAME, u.getName());
                     getContentResolver().insert(UserContentProvider.CONTENT_URI, values);
                 }
             } else if (userList.size() > mLastUsers.size()) {
@@ -397,8 +408,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 for (User u : userList) {
                     values.put(DataContract.UserEntry.COLUMN_NAME_USERID, u.getId());
-                    values.put(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME, u.getFirstname());
-                    values.put(DataContract.UserEntry.COLUMN_NAME_FIRSTNAME, u.getLastname());
+                    values.put(DataContract.UserEntry.COLUMN_NAME_USER_NAME, u.getName());
                     getContentResolver().insert(UserContentProvider.CONTENT_URI, values);
                 }
 
@@ -500,7 +510,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         EditText messageField = (EditText) findViewById(R.id.writeMessage);
         String messageBody = messageField.getText().toString();
         OutputStream output = null;
-        String channel = "CHANNEL_BROADCAST";
 
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -510,9 +519,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         try {
             Log.d(TAG, "in uploadXml() - POST setup");
 
+
+
             String body = "<message><body><text>" + messageBody + "</text></body>" +
-                    "<channel>" + channel + "</channel><fromUserId>" + currentUser +
-                    "</fromUserId><messageId>-1</messageId><timestamp>-1</timestamp></message>";
+                    "<channel>" + channel.toString() + "</channel><fromUserId>" + currentUser +
+                    "</fromUserId><toUserId>" + userSelection + "</toUserId><toGroupId>" +
+                    groupSelection + "</toGroupId><messageId>-1</messageId><timestamp>-1</timestamp></message>";
 
             conn.setDoOutput(true);
             conn.setReadTimeout(10000);

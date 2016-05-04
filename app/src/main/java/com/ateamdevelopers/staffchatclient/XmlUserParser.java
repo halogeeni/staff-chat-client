@@ -48,7 +48,7 @@ public class XmlUserParser {
             }
         }
 
-        Log.d(TAG, "user 0 now: " + users.get(0).toString());
+        Log.d(TAG, "user 0 now: " + ((User)users.get(0)).getName());
 
         return users;
     }
@@ -57,8 +57,7 @@ public class XmlUserParser {
         parser.require(XmlPullParser.START_TAG, ns, "user");
 
         int userId = 0;
-        String firstname = "";
-        String lastname = "";
+        String firstname = "", lastname = "", fullname;
 
         // XML node parse loop
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -83,7 +82,8 @@ public class XmlUserParser {
             }
         }
 
-        return new User(userId, firstname, lastname);
+        fullname = firstname + " " + lastname;
+        return new User(userId, fullname);
     }
 
     private String readTagValue(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {

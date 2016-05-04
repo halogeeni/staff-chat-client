@@ -11,6 +11,7 @@ nbactions.xml
 *.idea
 *.iml
 .gradle
+.gradle/
 
 # Directories #
 /build/
