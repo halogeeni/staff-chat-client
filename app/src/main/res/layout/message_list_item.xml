@@ -5,27 +5,34 @@
     android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/messageUsername"
+        android:id="@+id/messageBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:typeface="sans"
         android:gravity="left"
-        android:text="username" />
+        android:text="body"
+        android:textSize="17dp"
+        android:padding="5dp" />
 
     <TextView
-        android:id="@+id/messageBody"
-        android:layout_width="wrap_content"
+        android:id="@+id/messageUsername"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:typeface="sans"
-        android:gravity="left"
-        android:text="body"/>
+        android:text="username"
+        android:gravity="right"
+        android:textSize="12dp"
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/messageTimestamp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:typeface="sans"
+        android:text="timestamp"
+        android:textSize="12dp"
         android:gravity="right"
-        android:text="timestamp"/>
+        android:paddingRight="5dp" />
 
 </LinearLayout>
+

@@ -48,6 +48,7 @@ android:layout_height="match_parent">
 
 </FrameLayout>
 <!-- The navigation drawer -->
+
     <LinearLayout
         android:id="@+id/drawer_Linearlayout"
         android:layout_width="240dp"
@@ -58,6 +59,18 @@ android:layout_height="match_parent">
         android:background="#ffffff"
         android:layout_weight="0.90"
         android:weightSum="1" >
+
+        <Button
+            android:id="@+id/broadcast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D0E2FF"
+            android:text="Broadcast"
+            android:textSize="30dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:onClick="broadcastButtonClicked" />
 
         <TextView
             android:layout_width="match_parent"

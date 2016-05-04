@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,8 +21,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
@@ -262,6 +258,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mDrawer.closeDrawers();
             }
         });
+    }
+
+    public void broadcastButtonClicked(View v) {
+        channel = Channel.CHANNEL_BROADCAST;
+        // cancel active polling task
+        mTimer.cancel();
+        // clear message db table & counter
+        getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+        mLastMessages.clear();
+        mLastMessageCount = 0;
+        // start new polling
+        mTimer = startMessagePollingTask();
+        // close navigation drawer
+        mDrawer.closeDrawers();
     }
 
     public void sendButtonClicked(View v) {
