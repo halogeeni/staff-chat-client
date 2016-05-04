@@ -5,18 +5,22 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -27,7 +31,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final int MESSAGE_LOADER_ID = 0x01, GROUP_LOADER_ID = 0x02, USER_LOADER_ID = 0x03;
 
     private final int currentUser = 0;
-    private int groupSelection = 0;
-    private int userSelection = 0;
+    private int groupSelection;
+    private int userSelection;
 
     private Channel channel;
 
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // REST URL - should be eventually the root, e.g. http://10.0.2.2:8080/StaffChat/webresources/
     private final String postMessageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/add";
-    private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages/broadcast";
+    private final String messageUrl = "http://10.0.2.2:8080/StaffChat/webresources/messages";
     private final String userUrl = "http://10.0.2.2:8080/StaffChat/webresources/users";
     private final String groupUrl = "http://10.0.2.2:8080/StaffChat/webresources/groups";
 
@@ -93,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Message> mLastMessages;
     private List<User> mLastUsers;
     private List<Group> mLastGroups;
+    private DrawerLayout mDrawer;
+    private int mLastMessageCount;
+
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // open broadcast chat by default
         channel = Channel.CHANNEL_BROADCAST;
+
+        // default contact selection values
+        groupSelection = 0;
+        userSelection = 0;
+        mLastMessageCount = 0;
 
         // flush the databases on login
         mMessageDbHelper = new MessageDatabaseHelper(this);
@@ -111,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mUserDbHelper = new UserDatabaseHelper(this);
         mUserDbHelper.initDb();
+
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mLastMessages = new ArrayList<>();
         mLastGroups = new ArrayList<>();
@@ -133,6 +150,56 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new String[]{DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME},
                 new int[]{R.id.groupName}, CursorAdapter.NO_SELECTION);
 
+        // setup a view binder to:
+        //  * convert timestamps --> date strings
+        //  * userids --> full names
+        mMessageAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
+                switch (aView.getId()) {
+                    case R.id.messageUsername:
+                        int userId = aCursor.getInt(aColumnIndex);
+                        Cursor usernames =
+                                getContentResolver().query(UserContentProvider.CONTENT_URI,
+                                        new String[]{DataContract.UserEntry.COLUMN_NAME_USERID,
+                                                DataContract.UserEntry.COLUMN_NAME_USER_NAME},
+                                        DataContract.UserEntry.COLUMN_NAME_USERID + " = ?",
+                                        new String[]{String.valueOf(userId)}, null);
+                        Log.d(TAG, "usernames cursor row count: " + usernames.getCount());
+                        Log.d(TAG, "usernames cursor column count: " + usernames.getColumnCount());
+                        Log.d(TAG, "cursor column: " + aCursor.getColumnName(aColumnIndex));
+
+                        usernames.moveToPosition(userId);
+
+                        // TODO username binding not tested yet!!
+                        if (usernames.getCount() > 0) {
+                            //Log.d(TAG, usernames.toString());
+                            ((TextView) aView).setText("käyttäjänimi");
+                            //((TextView) aView).setText(usernames.getString(usernames.getColumnIndex(DataContract.UserEntry.COLUMN_NAME_USER_NAME)));
+                            //aCursor.close();
+                            return true;
+                        } else {
+                            //aCursor.close();
+                            return false;
+                        }
+
+                    case R.id.messageTimestamp:
+                        try {
+                            long timestamp = aCursor.getLong(aColumnIndex);
+                            Date d = new Date(timestamp);
+                            SimpleDateFormat s = new SimpleDateFormat();
+                            ((TextView) aView).setText(s.format(d));
+                            //aCursor.close();
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
+                }
+                // not desired view...
+                //aCursor.close();
+                return false;
+            }
+        });
+
         ListView messageListView = (ListView) findViewById(R.id.messageList);
         ListView userListView = (ListView) findViewById(R.id.drawer_users);
         ListView groupListView = (ListView) findViewById(R.id.drawer_groups);
@@ -141,13 +208,52 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userListView.setAdapter(mUserAdapter);
         groupListView.setAdapter(mGroupAdapter);
 
-        startMessagePollingTask();
+        mTimer = startMessagePollingTask();
         startUserPollingTask();
         startGroupPollingTask();
 
+        // TODO maybe re-init or reset loaders on item clicks?
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, null, this);
         getLoaderManager().initLoader(GROUP_LOADER_ID, null, this);
         getLoaderManager().initLoader(USER_LOADER_ID, null, this);
+
+        // contact lists' itemClickListeners
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "userList item # " + id + " clicked");
+                userSelection = position;
+                channel = Channel.CHANNEL_PRIVATE;
+                // cancel active polling task
+                mTimer.cancel();
+                // clear message db table & counter
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                mLastMessages.clear();
+                mLastMessageCount = 0;
+                mTimer = startMessagePollingTask();
+                mDrawer.closeDrawers();
+            }
+        });
+
+        groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "groupList item # " + id + " clicked");
+                groupSelection = position;
+                Log.d(TAG, "groupSelection now: " + groupSelection);
+                channel = Channel.CHANNEL_GROUP;
+                // cancel active polling task
+                mTimer.cancel();
+                // clear message db table & counter
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                mLastMessages.clear();
+                mLastMessageCount = 0;
+                // start new polling
+                mTimer = startMessagePollingTask();
+                // close navigation drawer
+                mDrawer.closeDrawers();
+            }
+        });
     }
 
     public void sendButtonClicked(View v) {
@@ -159,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     // 2 sec message polling timer
-    protected void startMessagePollingTask() {
+    protected Timer startMessagePollingTask() {
         final Handler handler = new Handler();
         Timer timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
@@ -177,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         };
         timer.schedule(doAsynchronousTask, 0, 1000); //execute every 2 secs
+        return timer;
     }
 
     // 60 sec user polling timer
@@ -318,6 +425,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         XmlMessageParser messageParser = new XmlMessageParser();
         String result = "";
 
+        switch (channel) {
+            case CHANNEL_BROADCAST:
+                urlString += "/broadcast";
+                break;
+            case CHANNEL_PRIVATE:
+                urlString += ("/" + currentUser + "/private/" + userSelection);
+                break;
+            case CHANNEL_GROUP:
+                urlString += ("/group/" + groupSelection);
+                break;
+        }
+
         try {
             // connect to the server & get stream
             URL url = new URL(urlString);
@@ -328,6 +447,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // not the most elegant solution, but works for now
             List<Message> messageList = messageParser.parse(stream);
+
+            /*
             Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
             if (mLastMessages.isEmpty()) {
                 mLastMessages.addAll(messageList);
@@ -339,14 +460,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
                     values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
                     values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
+                Log.d(TAG, "messageList in: " + messageList.toString());
             } else if (messageList.size() > mLastMessages.size()) {
                 Log.d(TAG, "fetched message list contained new entries");
 
                 List<Message> tempMessageList = new ArrayList<>(messageList);
 
-                messageList.removeAll(mLastMessages);
+                // TODO fix this
+                for(int i = 0; i < mLastMessages.size(); i++) {
+                    // TODO message ids?
+                    if(messageList.get(i).getTimestamp() == mLastMessages.get(i).getTimestamp()) {
+                        messageList.remove(i);
+                    }
+                }
+
+                //messageList.removeAll(mLastMessages);
+                Log.d(TAG, "messageList after removeAll(): " + messageList.toString());
                 ContentValues values = new ContentValues();
 
                 for (Message m : messageList) {
@@ -361,7 +493,44 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mLastMessages.clear();
                 mLastMessages.addAll(tempMessageList);
             }
+            */
 
+            Log.d(TAG, "in downloadMessageXml - mLastMessages now: " + mLastMessages);
+
+            if (messageList == null || messageList.size() == 0) {
+                // no messages or something went wrong with the parsing
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+
+            } else if (messageList.size() > mLastMessageCount) {
+                int newMessages = messageList.size() - mLastMessageCount;
+                // clear table
+                //getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                // insert new values
+                ContentValues values = new ContentValues();
+                for (int i = 0; i < newMessages; i++) {
+                    Message m = messageList.get(messageList.size() - i - 1);
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+                }
+                /*for (Message m : messageList) {
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_FROM_USER, m.getFromUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_USER, m.getToUserId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TO_GROUP, m.getToGroupId());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_BODY, m.getBody());
+                    values.put(DataContract.MessageEntry.COLUMN_NAME_TIMESTAMP, m.getTimestamp());
+                    getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
+                }*/
+                // update last poll message counter
+                mLastMessageCount = messageList.size();
+            } else if (messageList.size() < mLastMessageCount) {
+                // something went terribly wrong... lets clear messages and start over
+                getContentResolver().delete(MessageContentProvider.CONTENT_URI, null, null);
+                mLastMessageCount = 0;
+            }
         } finally {
             if (stream != null) {
                 stream.close();
@@ -466,7 +635,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.GroupEntry.COLUMN_NAME_GROUP_NAME, g.getName());
                     getContentResolver().insert(MessageContentProvider.CONTENT_URI, values);
                 }
-
                 mLastGroups.clear();
                 mLastGroups.addAll(tempGroupList);
             }
@@ -519,8 +687,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         try {
             Log.d(TAG, "in uploadXml() - POST setup");
 
-
-
             String body = "<message><body><text>" + messageBody + "</text></body>" +
                     "<channel>" + channel.toString() + "</channel><fromUserId>" + currentUser +
                     "</fromUserId><toUserId>" + userSelection + "</toUserId><toGroupId>" +
@@ -532,7 +698,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             conn.setFixedLengthStreamingMode(body.getBytes().length);
             conn.setRequestProperty("Content-Type", "application/xml; charset=\"utf-8\"");
 
-            Log.d(TAG, "in uploadXml() - sending XML data to server:\n"+body);
+            Log.d(TAG, "in uploadXml() - sending XML data to server:\n" + body);
             output = new BufferedOutputStream(conn.getOutputStream());
             output.write(body.getBytes());
             output.flush();

@@ -53,6 +53,10 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         return mDb.insert(DataContract.MessageEntry.TABLE_NAME, null, values);
     }
 
+    public int deleteAll() {
+        return mDb.delete(DataContract.MessageEntry.TABLE_NAME, null, null);
+    }
+
     public List getMessageList() {
         List<Message> messages = new ArrayList<>();
         mDb = getReadableDatabase();
@@ -124,11 +128,10 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.MessageEntry._ID + " ASC";
 
         return mDb.query(
-                DataContract.MessageEntry.TABLE_NAME,    // The table to query
+                DataContract.MessageEntry.TABLE_NAME,       // The table to query
                 projection,                                 // The columns to return
                 null,                                       // The columns for the WHERE clause
                 null,                                       // The values for the WHERE clause
@@ -143,8 +146,6 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "in onCreate()");
         db.execSQL(SQL_CREATE_TABLE);
     }
-
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

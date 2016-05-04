@@ -62,7 +62,6 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.GroupEntry._ID + " ASC";
 
         Cursor c = mDb.query(
@@ -109,7 +108,6 @@ public class GroupDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.GroupEntry._ID + " ASC";
 
         return mDb.query(

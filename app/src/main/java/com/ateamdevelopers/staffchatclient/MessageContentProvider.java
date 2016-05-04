@@ -48,17 +48,20 @@ public class MessageContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // TODO not used in this lab
-        return 0;
+        int rows = mMessageDb.deleteAll();
+        getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+        return rows;
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         try {
             long id = mMessageDb.insertMessage(values);
-            Uri returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
-            getContext().getContentResolver().notifyChange(returnUri, null);
-            return returnUri;
+            //Uri returnUri = CONTENT_URI;
+            //Uri returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
+            getContext().getContentResolver().notifyChange(CONTENT_URI, null);
+            return CONTENT_URI;
+            //return returnUri;
         } catch(Exception e) {
             return null;
         }

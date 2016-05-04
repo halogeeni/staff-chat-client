@@ -61,7 +61,6 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.UserEntry._ID + " ASC";
 
         Cursor c = mDb.query(
@@ -107,7 +106,6 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
         };
 
         // How you want the results sorted in the resulting Cursor
-        // TODO should be based on timestamp?
         String sortOrder = DataContract.UserEntry._ID + " ASC";
 
         return mDb.query(
@@ -120,7 +118,24 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
                 sortOrder                                   // The sort order
         );
     }
+/*
+    public Cursor getCustomUserCursor(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        mDb = getReadableDatabase();
 
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+
+        return mDb.query(
+                DataContract.UserEntry.TABLE_NAME,          // The table to query
+                projection,                                 // The columns to return
+                selection,                                  // The columns for the WHERE clause
+                selectionArgs,                              // The values for the WHERE clause
+                null,                                       // don't group the rows
+                null,                                       // don't filter by row groups
+                sortOrder                                   // The sort order
+        );
+    }
+*/
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "in onCreate()");
